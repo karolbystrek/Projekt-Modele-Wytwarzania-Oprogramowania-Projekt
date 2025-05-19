@@ -1,5 +1,6 @@
 \documentclass[a4paper,12pt]{article}
 \usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
 \usepackage[polish]{babel}
 \usepackage{graphicx}
 \usepackage{geometry}
@@ -239,9 +240,9 @@ W tej sekcji przedstawiono scenariusze przypadków użycia związane z podstawow
         \begin{enumerate}
             \item Aktor uruchamia aplikację mobilną OpenTravel lub otwiera stronę internetową.
             \item Aktor wybiera opcję "Zarejestruj się".
-            \item System wyświetla formularz rejestracyjny.
+            \item System wyświetla formularz rejestracyjny zawierający następujące sekcje i pola: wybór typu konta (Użytkownik/Kierowca), dane logowania (adres e-mail, hasło, potwierdzenie hasła), dane osobowe (imię, nazwisko), numer telefonu, zgody (regulamin, polityka prywatności).
             \item Aktor wybiera typ konta (Użytkownik lub Kierowca – jeśli rozróżnienie jest na tym etapie).
-            \item Aktor wypełnia wymagane pola formularza (np. adres e-mail, hasło, imię, nazwisko, numer telefonu). Konkretne pola mogą zależeć od typu konta.
+            \item Aktor wypełnia wymagane pola formularza (adres e-mail, hasło, imię, nazwisko, numer telefonu). Konkretne pola mogą zależeć od typu konta.
             \item Aktor akceptuje regulamin systemu i politykę prywatności.
             \item Aktor wybiera przycisk potwierdzający chęć rejestracji (np. "Zarejestruj", "Utwórz konto").
             \item System przeprowadza walidację wprowadzonych danych (np. format adresu e-mail, siła hasła, kompletność danych).
@@ -295,6 +296,1254 @@ W tej sekcji przedstawiono scenariusze przypadków użycia związane z podstawow
                     \item System OpenTravel wyświetla komunikat o niepowodzeniu autoryzacji i sugeruje ponowienie próby lub wybór innej metody rejestracji.
                 \end{enumerate}
         \end{itemize}
+\end{itemize}
+
+\subsection{Scenariusze dla modułu: Przejazdy Taksówką / Na Żądanie}
+W tej sekcji przedstawiono szczegółowe scenariusze przypadków użycia związane z funkcjonalnościami zamawiania, realizacji i zarządzania przejazdami taksówkami lub innymi środkami transportu na żądanie w systemie OpenTravel. Obejmują one interakcje zarówno Użytkownika, jak i Kierowcy z platformą.
+
+\subsubsection{PU-PT-01: Zamawianie przejazdu}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Zamawianie przejazdu
+    \item \textbf{Opis przypadku użycia:} Umożliwia Użytkownikowi zamówienie przejazdu "na teraz" (ASAP) poprzez określenie miejsca odbioru i docelowego, wybór typu pojazdu oraz potwierdzenie zamówienia i metody płatności.
+    \item \textbf{Aktorzy biorący udział:} Użytkownik, Przewoźnik Prywatny (system zewnętrzny), Dostawca Usług Płatności (system zewnętrzny)
+    \item \textbf{Uzasadnienie:} Zapewnienie Użytkownikowi możliwości szybkiego i wygodnego zamówienia dostępnego środka transportu w czasie rzeczywistym, bez konieczności ręcznego wyszukiwania czy dzwonienia.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Użytkownik jest zalogowany do aplikacji OpenTravel.
+            \item Aplikacja ma dostęp do usług lokalizacyjnych urządzenia Użytkownika (lub Użytkownik ręcznie wprowadza adres odbioru).
+            \item System ma aktywne połączenie z systemami Przewoźników Prywatnych.
+            \item Użytkownik ma zdefiniowaną przynajmniej jedną metodę płatności w systemie lub jest gotowy ją dodać/wybrać.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item Zamówienie na przejazd zostało złożone i przyjęte przez system Przewoźnika Prywatnego.
+            \item Najbliższy dostępny Kierowca (spełniający kryteria) został powiadomiony o zleceniu (lub zlecenie trafiło do puli oczekujących na akceptację).
+            \item Użytkownik otrzymał potwierdzenie zamówienia wraz z szacowanym czasem oczekiwania na Kierowcę, przewidywaną ceną (lub zakresem cenowym) oraz danymi pojazdu i Kierowcy (jeśli już przydzielony).
+            \item Płatność została wstępnie autoryzowana przez system Dostawcy Usług Płatności (jeśli dotyczy płatności bezgotówkowej).
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item Użytkownik wybiera opcję "Zamów przejazd" lub "Taxi" w aplikacji OpenTravel.
+            \item System automatycznie wykrywa aktualną lokalizację Użytkownika jako domyślne miejsce odbioru (z możliwością korekty przez Użytkownika na mapie lub przez wpisanie adresu).
+            \item Użytkownik wprowadza adres docelowy (ręcznie, poprzez wyszukiwarkę adresów z autouzupełnianiem lub wskazanie na mapie).
+            \item System wyświetla na mapie sugerowaną trasę przejazdu.
+            \item System, na podstawie danych od zintegrowanych Przewoźników Prywatnych, prezentuje dostępne typy pojazdów/usług (np. Standard, Premium, XL, Eko, Dostosowany dla osób z niepełnosprawnościami) wraz z szacunkową ceną (lub widełkami cenowymi, informacją o mnożniku taryfy dynamicznej, jeśli ma zastosowanie) i przybliżonym czasem oczekiwania na przyjazd pojazdu dla każdego typu.
+            \item Użytkownik wybiera preferowany typ pojazdu/usługi.
+            \item System wyświetla podsumowanie zamówienia: miejsce odbioru, miejsce docelowe, wybrany typ pojazdu, szacowaną cenę/zakres cenowy, przewidywany czas oczekiwania oraz domyślną metodę płatności Użytkownika.
+            \item Użytkownik ma możliwość zmiany metody płatności (jeśli ma ich kilka lub chce dodać nową, np. płatność gotówką, o ile jest akceptowana przez Przewoźnika).
+            \item Użytkownik potwierdza zamówienie przejazdu (np. przyciskiem "Zamów teraz" lub "Potwierdź").
+            \item Jeśli wybrano płatność bezgotówkową, system OpenTravel inicjuje wstępną autoryzację szacowanej kwoty u Dostawcy Usług Płatności.
+            \item System OpenTravel wysyła zlecenie (zawierające szczegóły przejazdu i Użytkownika) do systemu odpowiedniego Przewoźnika Prywatnego.
+            \item System Przewoźnika Prywatnego wyszukuje najbliższego dostępnego Kierowcę spełniającego kryteria (typ pojazdu, lokalizacja) i przydziela mu zlecenie lub umieszcza zlecenie w puli dostępnej dla Kierowców.
+            \item System Przewoźnika Prywatnego zwraca do OpenTravel potwierdzenie przyjęcia zamówienia oraz, gdy Kierowca zostanie przydzielony, jego dane (imię, zdjęcie, ocena, marka i numer rejestracyjny pojazdu) oraz zaktualizowany czas przyjazdu.
+            \item System OpenTravel wyświetla Użytkownikowi potwierdzenie zamówienia, szacowany czas przyjazdu Kierowcy, jego dane oraz umożliwia śledzenie pojazdu na mapie (przejście do PU-PT-03).
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Brak dostępnych pojazdów wybranego typu.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 6 Głównego ciągu zdarzeń.} System informuje Użytkownika o braku dostępnych pojazdów wybranego typu w najbliższej okolicy lub o długim czasie oczekiwania.
+                    \item System może zasugerować wybór innego typu pojazdu, zmianę miejsca odbioru lub spróbowanie później.
+                \end{enumerate}
+            \item \textbf{A2: Użytkownik dodaje notatkę dla Kierowcy.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Przed krokiem 9 Głównego ciągu zdarzeń.} Użytkownik ma możliwość dodania krótkiej notatki dla Kierowcy (np. "Proszę czekać przy bramie nr 5", "Mam duży bagaż").
+                    \item Notatka jest przekazywana Kierowcy wraz ze zleceniem.
+                \end{enumerate}
+             \item \textbf{A3: Płatność gotówką.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Krok 8 Głównego ciągu zdarzeń.} Użytkownik wybiera płatność gotówką (jeśli opcja jest dostępna dla danego Przewoźnika/Kierowcy).
+                    \item Krok 10 (wstępna autoryzacja) jest pomijany. System informuje Przewoźnika o wybranej formie płatności.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Problem z usługami lokalizacyjnymi.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Krok 2 Głównego ciągu zdarzeń.} System nie może uzyskać dostępu do lokalizacji Użytkownika (np. wyłączone usługi GPS, brak uprawnień aplikacji).
+                    \item System prosi Użytkownika o ręczne wprowadzenie adresu odbioru lub włączenie usług lokalizacyjnych.
+                \end{enumerate}
+            \item \textbf{W2: Brak dostępnych jakichkolwiek pojazdów w okolicy.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 5 Głównego ciągu zdarzeń.} System nie znajduje żadnych dostępnych Kierowców/pojazdów w akceptowalnym promieniu od miejsca odbioru.
+                    \item System wyświetla komunikat: "Brak dostępnych pojazdów w Twojej okolicy. Spróbuj ponownie później."
+                \end{enumerate}
+            \item \textbf{W3: Nieudana wstępna autoryzacja płatności.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 10 Głównego ciągu zdarzeń.} Dostawca Usług Płatności odrzuca próbę autoryzacji (np. niewystarczające środki, błędne dane karty, blokada karty).
+                    \item System OpenTravel informuje Użytkownika o problemie z płatnością i prosi o wybór innej metody płatności lub aktualizację danych obecnej. Zamówienie nie jest wysyłane do Przewoźnika do czasu rozwiązania problemu z płatnością. Scenariusz wraca do kroku 8.
+                \end{enumerate}
+            \item \textbf{W4: Błąd komunikacji z systemem Przewoźnika Prywatnego lub Dostawcy Usług Płatności.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Podczas kroków 5, 10, 11 lub 13 Głównego ciągu zdarzeń.} System OpenTravel napotyka problem z komunikacją.
+                    \item System wyświetla komunikat o błędzie technicznym i może zasugerować ponowienie próby. Jeśli błąd wystąpił po autoryzacji płatności, a przed potwierdzeniem przez Przewoźnika, autoryzacja powinna zostać anulowana.
+                \end{enumerate}
+            \item \textbf{W5: Zbyt wysoki mnożnik taryfy dynamicznej (surge pricing).}
+                 \begin{enumerate}
+                    \item \textit{Kontekst: Krok 5 Głównego ciągu zdarzeń.} System wyświetla informację o znacznie podwyższonej cenie z powodu dużego popytu.
+                    \item System wyświetla wyraźne ostrzeżenie o wysokim mnożniku i ostatecznej szacowanej cenie.
+                    \item Użytkownik może zaakceptować wyższą cenę i kontynuować zamówienie lub zrezygnować i spróbować później.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-PT-02: Rezerwacja przyszłego przejazdu}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Rezerwacja przyszłego przejazdu
+    \item \textbf{Opis przypadku użycia:} Umożliwia Użytkownikowi zarezerwowanie przejazdu na określoną datę i godzinę w przyszłości.
+    \item \textbf{Aktorzy biorący udział:} Użytkownik, Kierowca (potencjalnie, jeśli system pozwala na wcześniejsze przypisanie), Przewoźnik Prywatny (system zewnętrzny), Dostawca Usług Płatności (system zewnętrzny)
+    \item \textbf{Uzasadnienie:} Zapewnienie Użytkownikowi możliwości zaplanowania transportu z wyprzedzeniem, np. na lotnisko, ważne spotkanie.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Użytkownik jest zalogowany do aplikacji OpenTravel.
+            \item System Przewoźnika Prywatnego wspiera funkcję rezerwacji terminowych.
+            \item Użytkownik ma zdefiniowaną metodę płatności.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item Rezerwacja na przyszły przejazd została złożona i potwierdzona przez system Przewoźnika Prywatnego.
+            \item Użytkownik otrzymał potwierdzenie rezerwacji z jej szczegółami (data, godzina, trasa, szacowana cena).
+            \item Płatność może być autoryzowana lub pobrana z góry, w zależności od polityki Przewoźnika.
+            \item System przypomni Użytkownikowi o zbliżającej się rezerwacji.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item Użytkownik wybiera opcję "Zaplanuj przejazd" lub "Rezerwacja terminowa" w sekcji zamawiania taksówki.
+            \item System wyświetla formularz zamówienia, prosząc o podanie:
+                \begin{itemize}
+                    \item Adresu odbioru (wpisanie ręczne, wybór z mapy lub z zapisanych adresów).
+                    \item Adresu docelowego (wpisanie ręczne, wybór z mapy lub z zapisanych adresów).
+                    \item Daty i godziny odbioru (wybór z kalendarza i zegara, z uwzględnieniem minimalnego czasu wyprzedzenia wymaganego przez Przewoźnika).
+                    \item Opcjonalnie: liczby pasażerów, ilości bagażu.
+                \end{itemize}
+            \item Użytkownik wypełnia wszystkie wymagane pola.
+            \item System, na podstawie wprowadzonych danych, kontaktuje się z systemami Przewoźników Prywatnych w celu sprawdzenia dostępności usługi rezerwacji terminowej i uzyskania szacunkowej ceny dla różnych typów pojazdów.
+            \item System wyświetla dostępne typy pojazdów/usług wraz z szacowaną ceną.
+            \item Użytkownik wybiera preferowany typ pojazdu/usługi.
+            \item System wyświetla podsumowanie rezerwacji: miejsce odbioru, miejsce docelowe, data i godzina, wybrany typ pojazdu, szacowana cena, wybrana metoda płatności.
+            \item Użytkownik potwierdza rezerwację (np. przyciskiem "Zarezerwuj").
+            \item System OpenTravel wysyła zlecenie rezerwacji do systemu odpowiedniego Przewoźnika Prywatnego.
+            \item System Przewoźnika Prywatnego potwierdza przyjęcie rezerwacji. Może nastąpić wstępna autoryzacja płatności u Dostawcy Usług Płatności.
+            \item System OpenTravel wyświetla Użytkownikowi potwierdzenie rezerwacji i zapisuje ją w historii zamówień.
+            \item Na określony czas przed terminem odbioru (np. 30 minut), system Przewoźnika Prywatnego przypisuje konkretnego Kierowcę i pojazd do zlecenia. Informacje te są przekazywane do OpenTravel.
+            \item System OpenTravel wysyła Użytkownikowi powiadomienie przypominające o zbliżającej się rezerwacji, zawierające dane przydzielonego Kierowcy i pojazdu.
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Zmiana lub anulowanie rezerwacji terminowej.}
+                \begin{enumerate}
+                    \item Użytkownik, przed upływem określonego terminu, może zmodyfikować szczegóły rezerwacji (np. godzinę, adres) lub ją anulować (może się to wiązać z opłatą zgodnie z regulaminem Przewoźnika - patrz PU-PT-04).
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Brak możliwości rezerwacji terminowej dla podanych kryteriów.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 4 Głównego ciągu zdarzeń.} System Przewoźnika Prywatnego informuje, że rezerwacja terminowa dla podanej daty/godziny/lokalizacji nie jest możliwa (np. zbyt krótki czas wyprzedzenia, brak dostępnych pojazdów w systemie przewoźnika na ten termin).
+                    \item System wyświetla stosowny komunikat. Użytkownik może zmienić parametry rezerwacji.
+                \end{enumerate}
+            \item \textbf{W2: Problem z potwierdzeniem rezerwacji przez system Przewoźnika Prywatnego.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 9 Głównego ciągu zdarzeń.} System Przewoźnika nie może potwierdzić rezerwacji z powodu błędu technicznego.
+                    \item System OpenTravel informuje Użytkownika o problemie i ewentualnie anuluje wstępną autoryzację płatności.
+                \end{enumerate}
+            \item \textbf{W3: Brak dostępnego kierowcy przed terminem realizacji zlecenia.}
+                \begin{enumerate}
+                     \item \textit{Kontekst: Krok 12 Głównego ciągu zdarzeń.} Pomimo wcześniejszej rezerwacji, system Przewoźnika Prywatnego nie może znaleźć dostępnego Kierowcy na krótko przed planowanym odbiorem.
+                     \item System Przewoźnika Prywatnego informuje o tym system OpenTravel.
+                     \item System OpenTravel natychmiast powiadamia Użytkownika o problemie z realizacją rezerwacji i proponuje alternatywne rozwiązania (np. próba zamówienia przejazdu "na teraz", kontakt z obsługą klienta Przewoźnika). Ewentualna przedpłata jest zwracana.
+                 \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-PT-03: Śledzenie lokalizacji zamówionego pojazdu}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Śledzenie lokalizacji zamówionego pojazdu
+    \item \textbf{Opis przypadku użycia:} Umożliwia Użytkownikowi śledzenie na mapie w czasie rzeczywistym lokalizacji Kierowcy zmierzającego do miejsca odbioru. Kierowca również może widzieć przybliżoną lokalizację Użytkownika (jeśli Użytkownik udostępnia lokalizację).
+    \item \textbf{Aktorzy biorący udział:} Użytkownik, Kierowca
+    \item \textbf{Uzasadnienie:} Zwiększenie komfortu i poczucia bezpieczeństwa Użytkownika poprzez dostarczanie aktualnych informacji o położeniu zamówionego pojazdu i przewidywanym czasie jego przybycia. Ułatwia Kierowcy dotarcie do Użytkownika.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Użytkownik pomyślnie zamówił przejazd (zakończony PU-PT-01 lub aktywna rezerwacja terminowa PU-PT-02, do której został już przydzielony Kierowca).
+            \item Kierowca zaakceptował zlecenie i jest w drodze do miejsca odbioru Użytkownika.
+            \item Zarówno urządzenie Użytkownika, jak i Kierowcy mają włączone usługi lokalizacyjne i dostęp do sieci.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item Użytkownik widzi na mapie w aplikacji OpenTravel ikonę reprezentującą pojazd Kierowcy oraz jego aktualne położenie.
+            \item Kierowca widzi na mapie w swojej aplikacji lokalizację miejsca odbioru i ewentualnie przybliżoną, anonimizowaną lokalizację Użytkownika.
+            \item Informacje o lokalizacji są aktualizowane w czasie rzeczywistym.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item Po przydzieleniu Kierowcy do zamówienia Użytkownika, aplikacja OpenTravel (Użytkownika) automatycznie wyświetla mapę z zaznaczonym miejscem odbioru i ikoną pojazdu Kierowcy.
+            \item Aplikacja Kierowcy regularnie wysyła dane o jego aktualnej lokalizacji GPS do systemu Przewoźnika Prywatnego.
+            \item System Przewoźnika Prywatnego przekazuje te dane (lub przetworzone) do systemu OpenTravel.
+            \item System OpenTravel aktualizuje położenie ikony pojazdu Kierowcy na mapie Użytkownika.
+            \item Aplikacja OpenTravel (Użytkownika) może również wysyłać (za zgodą Użytkownika) jego przybliżoną, anonimizowaną lokalizację do systemu, aby ułatwić Kierowcy odnalezienie, szczególnie jeśli Użytkownik przemieszcza się w obrębie miejsca odbioru.
+            \item Aplikacja Użytkownika wyświetla również zaktualizowany szacowany czas przyjazdu Kierowcy (ETA).
+            \item Proces śledzenia trwa aż do momentu, gdy Kierowca zgłosi przybycie na miejsce odbioru.
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Użytkownik wyłącza udostępnianie swojej lokalizacji Kierowcy.}
+                \begin{enumerate}
+                    \item Użytkownik w ustawieniach aplikacji może zrezygnować z udostępniania swojej lokalizacji Kierowcy. Kierowca będzie widział jedynie ustalony punkt odbioru.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Utrata połączenia GPS lub sieciowego przez Kierowcę.}
+                \begin{enumerate}
+                    \item Aplikacja Kierowcy traci możliwość wysyłania aktualizacji lokalizacji.
+                    \item Aplikacja Użytkownika wyświetla ostatnią znaną lokalizację Kierowcy z informacją o możliwym opóźnieniu w aktualizacji lub komunikatem "Problem z lokalizacją kierowcy".
+                    \item System próbuje przywrócić połączenie.
+                \end{enumerate}
+            \item \textbf{W2: Utrata połączenia sieciowego przez Użytkownika.}
+                \begin{enumerate}
+                    \item Aplikacja Użytkownika nie może odbierać aktualizacji lokalizacji Kierowcy.
+                    \item Aplikacja wyświetla stosowny komunikat o problemie z połączeniem sieciowym.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-PT-04: Anulowanie zamówionego przejazdu}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Anulowanie zamówionego przejazdu
+    \item \textbf{Opis przypadku użycia:} Umożliwia Użytkownikowi lub Kierowcy anulowanie przyjętego zlecenia na przejazd, zgodnie z regulaminem Przewoźnika (może wiązać się z opłatą za anulowanie po określonym czasie).
+    \item \textbf{Aktorzy biorący udział:} Użytkownik, Kierowca, Przewoźnik Prywatny (system zewnętrzny), Dostawca Usług Płatności (system zewnętrzny - dla ewentualnej opłaty za anulowanie)
+    \item \textbf{Uzasadnienie:} Zapewnienie elastyczności w przypadku zmiany planów lub nieprzewidzianych okoliczności zarówno dla Użytkownika, jak i Kierowcy.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Przejazd został zamówiony (zakończony PU-PT-01 lub aktywna rezerwacja PU-PT-02) i Kierowca został przydzielony (lub zlecenie jest w puli).
+            \item Kurs się jeszcze nie rozpoczął.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item Zamówienie przejazdu zostało anulowane w systemie OpenTravel oraz w systemie Przewoźnika Prywatnego.
+            \item Druga strona (Kierowca lub Użytkownik) została powiadomiona o anulowaniu.
+            \item Ewentualna opłata za anulowanie została naliczona i pobrana od Użytkownika (jeśli dotyczy).
+            \item Kierowca (jeśli był już w drodze) może otrzymać rekompensatę (zależnie od polityki Przewoźnika).
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń (Anulowanie przez Użytkownika):}
+        \begin{enumerate}
+            \item Użytkownik wybiera opcję "Anuluj przejazd" w szczegółach aktywnego zamówienia.
+            \item System wyświetla informację o ewentualnej opłacie za anulowanie, jeśli ma zastosowanie (np. jeśli Kierowca jest już w drodze lub minął określony czas od zamówienia).
+            \item Użytkownik potwierdza chęć anulowania.
+            \item System OpenTravel wysyła żądanie anulowania do systemu Przewoźnika Prywatnego.
+            \item System Przewoźnika Prywatnego przetwarza anulowanie, powiadamia Kierowcę (jeśli był przydzielony) i potwierdza anulowanie do OpenTravel.
+            \item Jeśli naliczono opłatę za anulowanie, system OpenTravel inicjuje jej pobranie za pośrednictwem Dostawcy Usług Płatności z domyślnej metody płatności Użytkownika.
+            \item System OpenTravel wyświetla Użytkownikowi potwierdzenie anulowania oraz informację o ewentualnie pobranej opłacie.
+        \end{enumerate}
+    \item \textbf{Główny ciąg zdarzeń (Anulowanie przez Kierowcę):}
+        \begin{enumerate}
+            \item Kierowca, z ważnego powodu (np. awaria pojazdu, nieprzewidziane zdarzenie), wybiera opcję anulowania przyjętego zlecenia w swojej aplikacji.
+            \item Aplikacja Kierowcy może wymagać podania przyczyny anulowania.
+            \item Żądanie anulowania jest wysyłane do systemu Przewoźnika Prywatnego.
+            \item System Przewoźnika Prywatnego przetwarza anulowanie i powiadamia system OpenTravel.
+            \item System OpenTravel natychmiast informuje Użytkownika o anulowaniu przejazdu przez Kierowcę.
+            \item System OpenTravel (lub Przewoźnika Prywatnego) może automatycznie rozpocząć wyszukiwanie innego, najbliższego Kierowcy dla Użytkownika lub zaproponować Użytkownikowi ponowne złożenie zamówienia.
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Anulowanie bez opłaty.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Krok 2 Głównego ciągu zdarzeń (Anulowanie przez Użytkownika).} Użytkownik anuluje przejazd w okresie, w którym nie jest naliczana opłata (np. krótko po zamówieniu, zanim Kierowca zostanie przydzielony lub wyruszy).
+                    \item Krok 6 (pobranie opłaty) jest pomijany.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Próba anulowania po rozpoczęciu kursu.}
+                \begin{enumerate}
+                    \item Użytkownik lub Kierowca próbuje anulować przejazd po tym, jak Kierowca zgłosił jego rozpoczęcie.
+                    \item System odrzuca próbę anulowania, informując, że kurs już trwa.
+                \end{enumerate}
+            \item \textbf{W2: Problem z pobraniem opłaty za anulowanie.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 6 Głównego ciągu zdarzeń (Anulowanie przez Użytkownika).} Dostawca Usług Płatności odrzuca transakcję pobrania opłaty.
+                    \item System OpenTravel informuje Użytkownika o problemie. Niezapłacona opłata może zostać dodana do kolejnego zamówienia lub konto Użytkownika może zostać tymczasowo zablokowane do czasu uregulowania należności.
+                \end{enumerate}
+            \item \textbf{W3: Błąd komunikacji podczas procesu anulowania.}
+                \begin{enumerate}
+                    \item System napotyka problem z komunikacją z systemem Przewoźnika Prywatnego lub Dostawcy Usług Płatności.
+                    \item System wyświetla komunikat o błędzie i sugeruje ponowienie próby lub kontakt z obsługą. Status anulowania może być niejasny do czasu rozwiązania problemu.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-PT-05: Ocena kierowcy i przejazdu}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Ocena kierowcy i przejazdu
+    \item \textbf{Opis przypadku użycia:} Umożliwia Użytkownikowi wystawienie oceny (np. w skali gwiazdek) oraz opcjonalnie komentarza na temat zakończonego przejazdu i obsługi przez Kierowcę.
+    \item \textbf{Aktorzy biorący udział:} Użytkownik
+    \item \textbf{Uzasadnienie:} Zbieranie informacji zwrotnych na temat jakości usług świadczonych przez Kierowców, co pomaga w utrzymaniu standardów, a także dostarcza innym Użytkownikom informacji przy wyborze usług.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Użytkownik zrealizował przejazd zamówiony przez aplikację OpenTravel.
+            \item Kierowca zgłosił zakończenie kursu (zakończony PU-PT-10).
+            \item Płatność za kurs została przetworzona.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item Ocena i ewentualny komentarz Użytkownika dotyczące przejazdu i Kierowcy zostały zapisane w systemie.
+            \item Ocena może wpłynąć na ogólną ocenę Kierowcy widoczną dla innych Użytkowników i Przewoźnika Prywatnego.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item Po zakończeniu kursu i przetworzeniu płatności, aplikacja OpenTravel wyświetla Użytkownikowi ekran z prośbą o ocenę przejazdu i Kierowcy.
+            \item System prezentuje skalę ocen (np. od 1 do 5 gwiazdek) oraz opcjonalne pole tekstowe na komentarz.
+            \item Użytkownik wybiera ocenę gwiazdkową.
+            \item Użytkownik opcjonalnie wprowadza komentarz dotyczący przejazdu (np. czystość pojazdu, uprzejmość Kierowcy, styl jazdy).
+            \item Użytkownik może mieć możliwość wyboru predefiniowanych tagów opisujących pozytywne lub negatywne aspekty przejazdu.
+            \item Użytkownik zatwierdza ocenę (np. przyciskiem "Wyślij ocenę").
+            \item System OpenTravel zapisuje ocenę i komentarz, powiązując je z danym przejazdem i profilem Kierowcy.
+            \item System wyświetla Użytkownikowi podziękowanie za wystawienie oceny.
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Użytkownik pomija wystawienie oceny.}
+                \begin{enumerate}
+                    \item Użytkownik może zamknąć ekran oceny bez jej wystawiania.
+                    \item System może przypomnieć o możliwości oceny później (np. w historii przejazdów) przez określony czas.
+                \end{enumerate}
+            \item \textbf{A2: Zgłoszenie problemu z przejazdem.}
+                 \begin{enumerate}
+                    \item Oprócz oceny, Użytkownik ma możliwość zgłoszenia poważniejszego problemu z przejazdem (np. niebezpieczne zachowanie Kierowcy, zagubiony przedmiot) poprzez dedykowaną opcję, która może uruchomić osobny proces kontaktu z obsługą klienta.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Błąd zapisu oceny.}
+                \begin{enumerate}
+                    \item System napotyka problem techniczny podczas próby zapisania oceny.
+                    \item System wyświetla komunikat o błędzie i może umożliwić ponowną próbę zapisu.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-PT-06: Otrzymywanie powiadomienia o przyjeździe pojazdu}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Otrzymywanie powiadomienia o przyjeździe pojazdu
+    \item \textbf{Opis przypadku użycia:} Użytkownik otrzymuje automatyczne powiadomienie (np. push, SMS), gdy zamówiony Kierowca dotrze na wskazane miejsce odbioru lub znajduje się w jego bezpośrednim pobliżu.
+    \item \textbf{Aktorzy biorący udział:} Użytkownik, System OpenTravel (moduł powiadomień), Kierowca (pośrednio, poprzez zgłoszenie statusu w swojej aplikacji)
+    \item \textbf{Uzasadnienie:} Poinformowanie Użytkownika o gotowości Kierowcy do rozpoczęcia kursu, co minimalizuje czas oczekiwania i ułatwia spotkanie.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Przejazd został zamówiony i Kierowca jest w drodze do miejsca odbioru.
+            \item Użytkownik ma włączone powiadomienia z aplikacji OpenTravel.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item Użytkownik otrzymał powiadomienie o przyjeździe Kierowcy.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń (proces automatyczny):}
+        \begin{enumerate}
+            \item Kierowca, zbliżając się do miejsca odbioru lub po dotarciu, może ręcznie zasygnalizować w swojej aplikacji "Jestem na miejscu" lub system automatycznie wykrywa (na podstawie GPS), że Kierowca dotarł.
+            \item Informacja o przybyciu Kierowcy jest wysyłana z aplikacji Kierowcy do systemu Przewoźnika Prywatnego.
+            \item System Przewoźnika Prywatnego przekazuje tę informację do systemu OpenTravel.
+            \item System OpenTravel generuje powiadomienie dla Użytkownika (np. "Twój kierowca [Imię Kierowcy] już czeka!", "Pojazd [Marka, Numer rejestracyjny] jest na miejscu").
+            \item System wysyła powiadomienie do Użytkownika preferowanym kanałem (powiadomienie push w aplikacji, opcjonalnie SMS).
+            \item Aplikacja Użytkownika może również wyświetlić stosowny komunikat na ekranie śledzenia przejazdu.
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:} Brak typowych.
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Problem z wysyłką powiadomienia.}
+                \begin{enumerate}
+                    \item System OpenTravel napotyka problem techniczny uniemożliwiający wysłanie powiadomienia (np. błąd usługi powiadomień push, problem z bramką SMS).
+                    \item System powinien logować błąd. Użytkownik może nie otrzymać powiadomienia, ale informacja o przybyciu kierowcy powinna być widoczna w aplikacji.
+                \end{enumerate}
+            \item \textbf{W2: Użytkownik ma wyłączone powiadomienia.}
+                \begin{enumerate}
+                    \item Użytkownik wyłączył powiadomienia dla aplikacji OpenTravel w ustawieniach systemowych swojego urządzenia.
+                    \item Powiadomienie nie zostanie dostarczone. Informacja o przybyciu kierowcy będzie widoczna w interfejsie aplikacji po jej otwarciu.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-PT-07: Akceptacja lub odrzucenie zlecenia}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Akceptacja lub odrzucenie zlecenia
+    \item \textbf{Opis przypadku użycia:} Umożliwia Kierowcy, który otrzymał powiadomienie o nowym zleceniu (lub widzi je w puli dostępnych zleceń), zaakceptowanie go lub odrzucenie.
+    \item \textbf{Aktorzy biorący udział:} Kierowca, Przewoźnik Prywatny (system zewnętrzny)
+    \item \textbf{Uzasadnienie:} Mechanizm umożliwiający dynamiczne przydzielanie zleceń Kierowcom, którzy są dostępni i chętni do jego realizacji.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Kierowca jest zalogowany do swojej aplikacji i ma status "Dostępny" / "Online".
+            \item Nowe zlecenie przejazdu zostało wysłane do Kierowcy przez system Przewoźnika Prywatnego (lub pojawiło się w puli dostępnych zleceń).
+            \item Zlecenie nie zostało jeszcze zaakceptowane przez innego Kierowcę (jeśli było w puli).
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item \textbf{Przy akceptacji:} Zlecenie jest przypisane do Kierowcy. System Przewoźnika Prywatnego informuje o tym system OpenTravel, który powiadamia Użytkownika. Kierowca otrzymuje szczegóły zlecenia i może rozpocząć nawigację do miejsca odbioru.
+            \item \textbf{Przy odrzuceniu (lub braku reakcji w określonym czasie):} Zlecenie jest usuwane z listy dostępnych dla tego Kierowcy i system Przewoźnika Prywatnego może zaproponować je innemu Kierowcy lub Użytkownik otrzymuje informację o problemie ze znalezieniem kierowcy.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item Aplikacja Kierowcy wyświetla powiadomienie o nowym zleceniu, prezentując kluczowe informacje (np. odległość do miejsca odbioru, szacowany czas i długość kursu, ewentualnie miejsce docelowe, ocena Użytkownika).
+            \item Kierowca ma określony czas na reakcję (np. 30-60 sekund).
+            \item Kierowca wybiera opcję "Akceptuj zlecenie".
+            \item Aplikacja Kierowcy wysyła potwierdzenie akceptacji do systemu Przewoźnika Prywatnego.
+            \item System Przewoźnika Prywatnego oznacza zlecenie jako przyjęte przez tego Kierowcę i usuwa je z puli dostępnej dla innych.
+            \item System Przewoźnika Prywatnego wysyła potwierdzenie do systemu OpenTravel, który informuje Użytkownika o przydzieleniu Kierowcy.
+            \item Aplikacja Kierowcy wyświetla pełne szczegóły zlecenia, w tym dokładne miejsce odbioru, dane kontaktowe Użytkownika (np. zanonimizowany numer telefonu do kontaktu przez aplikację) oraz opcję nawigacji (przejście do PU-PT-08).
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Kierowca odrzuca zlecenie.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Krok 3 Głównego ciągu zdarzeń.} Kierowca wybiera opcję "Odrzuć zlecenie".
+                    \item Aplikacja Kierowcy wysyła informację o odrzuceniu do systemu Przewoźnika Prywatnego.
+                    \item System Przewoźnika Prywatnego może zaproponować zlecenie innemu Kierowcy. Kierowca, który odrzucił, może przez krótki czas nie otrzymywać nowych propozycji (zależnie od polityki Przewoźnika).
+                \end{enumerate}
+            \item \textbf{A2: Brak reakcji Kierowcy w wyznaczonym czasie.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 2 Głównego ciągu zdarzeń.} Kierowca nie podejmuje działania w określonym czasie.
+                    \item Zlecenie jest automatycznie traktowane jako odrzucone przez tego Kierowcę. System Przewoźnika Prywatnego postępuje jak w A1.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Zlecenie zostało w międzyczasie przyjęte przez innego Kierowcę (dotyczy zleceń z puli).}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Krok 3 Głównego ciągu zdarzeń.} Kierowca próbuje zaakceptować zlecenie, ale system Przewoźnika informuje, że jest ono już niedostępne.
+                    \item Aplikacja Kierowcy wyświetla stosowny komunikat.
+                \end{enumerate}
+            \item \textbf{W2: Błąd komunikacji z systemem Przewoźnika Prywatnego.}
+                \begin{enumerate}
+                    \item Aplikacja Kierowcy nie może wysłać decyzji (akceptacji/odrzucenia) lub otrzymać potwierdzenia.
+                    \item Aplikacja wyświetla komunikat o błędzie. Kierowca może spróbować ponownie.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-PT-08: Nawigowanie do miejsca odbioru pasażera}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Nawigowanie do miejsca odbioru pasażera
+    \item \textbf{Opis przypadku użycia:} Umożliwia Kierowcy, po zaakceptowaniu zlecenia, skorzystanie z funkcji nawigacji GPS wbudowanej w aplikację Kierowcy lub zintegrowanej z zewnętrzną aplikacją nawigacyjną, aby dotrzeć do miejsca odbioru Użytkownika.
+    \item \textbf{Aktorzy biorący udział:} Kierowca
+    \item \textbf{Uzasadnienie:} Ułatwienie Kierowcy szybkiego i efektywnego dotarcia do Użytkownika, minimalizując ryzyko pomyłki i skraca czas oczekiwania Użytkownika.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Kierowca zaakceptował zlecenie przejazdu (zakończony PU-PT-07).
+            \item Aplikacja Kierowcy wyświetla szczegóły zlecenia, w tym adres miejsca odbioru.
+            \item Urządzenie Kierowcy ma włączone usługi lokalizacyjne (GPS) i dostęp do map/danych nawigacyjnych.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item Kierowca korzysta z nawigacji prowadzącej go do miejsca odbioru Użytkownika.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item Po akceptacji zlecenia, aplikacja Kierowcy wyświetla przycisk "Nawiguj" lub "Prowadź do miejsca odbioru".
+            \item Kierowca wybiera opcję nawigacji.
+            \item Aplikacja Kierowcy uruchamia wbudowany moduł nawigacji lub przekazuje adres miejsca odbioru do domyślnej zewnętrznej aplikacji nawigacyjnej zainstalowanej na urządzeniu Kierowcy (np. Google Maps, Waze), jeśli Kierowca tak skonfigurował.
+            \item Nawigacja wyznacza optymalną trasę z aktualnej pozycji Kierowcy do miejsca odbioru Użytkownika.
+            \item Kierowca otrzymuje wskazówki nawigacyjne (wizualne na mapie i/lub głosowe) prowadzące go do celu.
+            \item Podczas nawigacji, aplikacja Kierowcy nadal może działać w tle, wysyłając aktualizacje lokalizacji dla Użytkownika (PU-PT-03).
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Ręczne wprowadzenie adresu do zewnętrznej nawigacji.}
+                \begin{enumerate}
+                    \item Kierowca może zdecydować się na ręczne skopiowanie adresu odbioru z aplikacji OpenTravel dla Kierowców i wprowadzenie go do preferowanej przez siebie, innej aplikacji nawigacyjnej.
+                \end{enumerate}
+            \item \textbf{A2: Kierowca zna trasę i nie korzysta z nawigacji.}
+                 \begin{enumerate}
+                    \item Kierowca może pominąć krok uruchomienia nawigacji, jeśli doskonale zna trasę do miejsca odbioru.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Problem z usługami lokalizacyjnymi lub danymi map.}
+                \begin{enumerate}
+                    \item Urządzenie Kierowcy ma problem z sygnałem GPS lub aplikacja nawigacyjna nie może załadować map.
+                    \item Aplikacja wyświetla komunikat o problemie. Kierowca może musieć polegać na swojej znajomości terenu lub próbować rozwiązać problem techniczny.
+                \end{enumerate}
+            \item \textbf{W2: Błąd integracji z zewnętrzną aplikacją nawigacyjną.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Krok 3 Głównego ciągu zdarzeń.} Aplikacja Kierowcy nie może poprawnie uruchomić lub przekazać danych do zewnętrznej aplikacji nawigacyjnej.
+                    \item Aplikacja Kierowcy może wyświetlić błąd lub zaproponować skorzystanie z wbudowanej nawigacji (jeśli dostępna) lub ręczne skopiowanie adresu.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-PT-09: Zgłaszanie rozpoczęcia kursu}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Zgłaszanie rozpoczęcia kursu
+    \item \textbf{Opis przypadku użycia:} Umożliwia Kierowcy zasygnalizowanie w systemie momentu, w którym Użytkownik wsiadł do pojazdu i przejazd faktycznie się rozpoczął. Od tego momentu system może zacząć naliczać opłatę za przejazd (w zależności od taryfy).
+    \item \textbf{Aktorzy biorący udział:} Kierowca
+    \item \textbf{Uzasadnienie:} Precyzyjne określenie momentu rozpoczęcia faktycznej usługi przewozowej, co jest kluczowe dla poprawnego naliczania opłat, statystyk i monitorowania przebiegu usługi.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Kierowca dotarł na miejsce odbioru wskazane przez Użytkownika (zakończony PU-PT-06 lub Kierowca manualnie potwierdził przybycie).
+            \item Użytkownik znajduje się w pojeździe Kierowcy i jest gotowy do rozpoczęcia podróży.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item Status przejazdu w systemie został zmieniony na "W trakcie".
+            \item System zaczyna rejestrować czas i/lub dystans przejazdu (w zależności od metody taryfikacji).
+            \item Użytkownik może widzieć w swojej aplikacji, że kurs się rozpoczął.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item Kierowca, po upewnieniu się, że Użytkownik (właściwy, może być krótka weryfikacja np. imienia lub celu podróży) jest w pojeździe, wybiera w swojej aplikacji opcję "Rozpocznij kurs" (lub podobną, np. przesuwając suwak).
+            \item Aplikacja Kierowcy wysyła informację o rozpoczęciu kursu do systemu Przewoźnika Prywatnego.
+            \item System Przewoźnika Prywatnego aktualizuje status zlecenia i przekazuje tę informację do systemu OpenTravel.
+            \item System OpenTravel aktualizuje status przejazdu w aplikacji Użytkownika.
+            \item Aplikacja Kierowcy może rozpocząć wyświetlanie licznika czasu/dystansu kursu oraz (jeśli skonfigurowano) uruchomić nawigację do miejsca docelowego podanego przez Użytkownika.
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Użytkownik zmienia cel podróży po rozpoczęciu kursu.}
+                \begin{enumerate}
+                    \item Użytkownik informuje Kierowcę o chęci zmiany miejsca docelowego.
+                    \item Kierowca (lub Użytkownik w swojej aplikacji, jeśli funkcja jest dostępna) aktualizuje adres docelowy w systemie.
+                    \item System przelicza szacowaną cenę (jeśli była stała) lub kontynuuje naliczanie dynamiczne. Nawigacja Kierowcy jest aktualizowana.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Próba rozpoczęcia kursu przed dotarciem na miejsce odbioru (lub bez Użytkownika).}
+                \begin{enumerate}
+                    \item Kierowca omyłkowo lub celowo próbuje rozpocząć kurs zbyt wcześnie.
+                    \item System (jeśli posiada odpowiednie mechanizmy weryfikacji, np. geofencing, lub na podstawie zgłoszenia Użytkownika) może zablokować taką akcję lub zarejestrować ją jako potencjalne nadużycie.
+                \end{enumerate}
+            \item \textbf{W2: Błąd komunikacji podczas zgłaszania rozpoczęcia kursu.}
+                \begin{enumerate}
+                    \item Aplikacja Kierowcy nie może połączyć się z systemem Przewoźnika Prywatnego.
+                    \item Aplikacja wyświetla błąd. Kierowca może spróbować ponownie. W przypadku dłuższego problemu, może być konieczny kontakt z dyspozytorem/obsługą techniczną.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-PT-10: Zgłaszanie zakończenia kursu}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Zgłaszanie zakończenia kursu
+    \item \textbf{Opis przypadku użycia:} Umożliwia Kierowcy zasygnalizowanie w systemie momentu, w którym Użytkownik dotarł do miejsca docelowego i opuścił pojazd. Kończy to naliczanie opłaty i inicjuje proces płatności.
+    \item \textbf{Aktorzy biorący udział:} Kierowca, Dostawca Usług Płatności (system zewnętrzny)
+    \item \textbf{Uzasadnienie:} Precyzyjne określenie momentu zakończenia usługi, finalizacja naliczania opłaty i rozpoczęcie procesu rozliczenia z Użytkownikiem.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Kurs jest w trakcie (rozpoczęty PU-PT-09).
+            \item Kierowca dotarł z Użytkownikiem do miejsca docelowego.
+            \item Użytkownik opuszcza pojazd.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item Status przejazdu w systemie został zmieniony na "Zakończony".
+            \item Ostateczna kwota za przejazd została obliczona (na podstawie czasu, dystansu, taryfy, ewentualnych opłat dodatkowych np. za postój).
+            \item Jeśli wybrano płatność bezgotówkową, proces obciążenia metody płatności Użytkownika został zainicjowany przez Dostawcę Usług Płatności.
+            \item Użytkownik otrzymał w aplikacji (i/lub e-mailem) podsumowanie przejazdu wraz z rachunkiem/paragonem.
+            \item Aplikacja wyświetla Użytkownikowi prośbę o ocenę przejazdu (przejście do PU-PT-05).
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item Kierowca, po dotarciu do miejsca docelowego i opuszczeniu pojazdu przez Użytkownika, wybiera w swojej aplikacji opcję "Zakończ kurs" (lub podobną).
+            \item Aplikacja Kierowcy wysyła informację o zakończeniu kursu, wraz z ewentualnymi danymi końcowymi (np. odczyt z taksometru, jeśli dotyczy) do systemu Przewoźnika Prywatnego.
+            \item System Przewoźnika Prywatnego oblicza ostateczną kwotę należności za przejazd na podstawie zarejestrowanych parametrów (czas, dystans, taryfa, mnożniki, opłaty dodatkowe).
+            \item System Przewoźnika Prywatnego przekazuje informację o zakończeniu kursu i finalnej kwocie do systemu OpenTravel.
+            \item System OpenTravel aktualizuje status przejazdu w aplikacji Użytkownika.
+            \item Jeśli Użytkownik wybrał płatność bezgotówkową:
+                \begin{enumerate}
+                    \item System OpenTravel (lub bezpośrednio system Przewoźnika) wysyła żądanie finalizacji płatności na obliczoną kwotę do Dostawcy Usług Płatności.
+                    \item Dostawca Usług Płatności przetwarza transakcję i odsyła potwierdzenie (lub informację o błędzie).
+                \end{enumerate}
+            \item Jeśli Użytkownik wybrał płatność gotówką, Kierowca pobiera należność bezpośrednio od Użytkownika. Aplikacja Kierowcy może wymagać potwierdzenia otrzymania gotówki.
+            \item System OpenTravel wysyła Użytkownikowi elektroniczny rachunek/paragon za przejazd (np. na e-mail oraz dostępny w historii przejazdów w aplikacji).
+            \item Aplikacja Użytkownika wyświetla prośbę o ocenę Kierowcy i przejazdu (inicjuje PU-PT-05).
+            \item Kierowca staje się dostępny do przyjmowania nowych zleceń (jeśli jego status nie zostanie zmieniony ręcznie na "Niedostępny").
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Dodawanie napiwku dla Kierowcy (płatność bezgotówkowa).}
+                \begin{enumerate}
+                    \item Po zakończeniu kursu, a przed lub po ocenie, aplikacja Użytkownika może zaoferować możliwość dodania napiwku dla Kierowcy (procentowo od wartości kursu lub stała kwota).
+                    \item Jeśli Użytkownik zdecyduje się na napiwek, kwota ta jest doliczana do finalnej płatności.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Nieudana płatność bezgotówkowa.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Krok 6b Głównego ciągu zdarzeń.} Dostawca Usług Płatności odrzuca transakcję (np. brak środków, wygaśnięcie karty).
+                    \item System OpenTravel informuje Użytkownika i Kierowcę o problemie z płatnością.
+                    \item Użytkownik jest proszony o zaktualizowanie metody płatności lub wybór innej. System ponawia próbę obciążenia. W ostateczności może być konieczność uregulowania płatności gotówką (jeśli Kierowca się zgodzi) lub powstaje zadłużenie na koncie Użytkownika.
+                \end{enumerate}
+            \item \textbf{W2: Błąd w obliczeniu finalnej kwoty.}
+                \begin{enumerate}
+                    \item System Przewoźnika Prywatnego błędnie oblicza kwotę za przejazd.
+                    \item Użytkownik lub Kierowca mogą zgłosić problem do obsługi klienta OpenTravel lub Przewoźnika w celu korekty.
+                \end{enumerate}
+            \item \textbf{W3: Błąd komunikacji podczas finalizacji płatności.}
+                \begin{enumerate}
+                    \item System napotyka problem z komunikacją z Dostawcą Usług Płatności.
+                    \item System informuje o problemie. Płatność może być opóźniona lub wymagać interwencji manualnej.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-PT-11: Zgłaszanie gotowości do przyjmowania zleceń}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Zgłaszanie gotowości do przyjmowania zleceń
+    \item \textbf{Opis przypadku użycia:} Umożliwia Kierowcy zmianę swojego statusu w aplikacji na "Online" / "Dostępny", sygnalizując systemowi Przewoźnika Prywatnego gotowość do przyjmowania nowych zleceń na przejazdy. Analogicznie, Kierowca może zmienić status na "Offline" / "Niedostępny".
+    \item \textbf{Aktorzy biorący udział:} Kierowca
+    \item \textbf{Uzasadnienie:} Zapewnienie Kierowcy kontroli nad własnym czasem pracy i dostępnością, a systemowi Przewoźnika aktualnych informacji o flocie dostępnych pojazdów.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Kierowca jest zalogowany do aplikacji dla Kierowców.
+            \item Kierowca nie realizuje aktualnie żadnego kursu.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item \textbf{Przy zmianie na "Online":} Status Kierowcy w systemie Przewoźnika Prywatnego zostaje zmieniony na "Dostępny". Kierowca może otrzymywać propozycje nowych zleceń.
+            \item \textbf{Przy zmianie na "Offline":} Status Kierowcy w systemie Przewoźnika Prywatnego zostaje zmieniony na "Niedostępny". Kierowca nie będzie otrzymywał nowych zleceń.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń (Przejście w tryb "Online"):}
+        \begin{enumerate}
+            \item Kierowca w swojej aplikacji wybiera opcję zmiany statusu na "Online" / "Dostępny" (np. poprzez przełącznik, przycisk).
+            \item Aplikacja Kierowcy wysyła informację o zmianie statusu do systemu Przewoźnika Prywatnego.
+            \item System Przewoźnika Prywatnego aktualizuje status Kierowcy w swojej bazie danych.
+            \item Aplikacja Kierowcy wyświetla potwierdzenie zmiany statusu na "Online". Kierowca jest teraz widoczny dla systemu jako dostępny do przyjmowania zleceń.
+        \end{enumerate}
+    \item \textbf{Główny ciąg zdarzeń (Przejście w tryb "Offline"):}
+        \begin{enumerate}
+            \item Kierowca w swojej aplikacji wybiera opcję zmiany statusu na "Offline" / "Niedostępny".
+            \item Aplikacja Kierowcy wysyła informację o zmianie statusu do systemu Przewoźnika Prywatnego.
+            \item System Przewoźnika Prywatnego aktualizuje status Kierowcy.
+            \item Aplikacja Kierowcy wyświetla potwierdzenie zmiany statusu na "Offline". Kierowca przestaje otrzymywać nowe zlecenia.
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Automatyczne przejście w tryb "Offline" po określonym czasie braku aktywności.}
+                \begin{enumerate}
+                    \item Jeśli Kierowca jest "Online", ale przez dłuższy, zdefiniowany przez Przewoźnika czas nie wykazuje aktywności w aplikacji (np. nie porusza się, nie reaguje na alerty), system może automatycznie zmienić jego status na "Offline", aby nie blokować zleceń.
+                    \item Kierowca otrzymuje powiadomienie o automatycznej zmianie statusu.
+                \end{enumerate}
+            \item \textbf{A2: Ustawienie przerwy/tymczasowej niedostępności.}
+                 \begin{enumerate}
+                    \item Kierowca może mieć opcję ustawienia krótkiej przerwy (np. 15 minut, 30 minut), podczas której nie będzie otrzymywał zleceń, a po jej upływie status automatycznie wróci na "Online".
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Błąd komunikacji z systemem Przewoźnika Prywatnego podczas zmiany statusu.}
+                \begin{enumerate}
+                    \item Aplikacja Kierowcy nie może zaktualizować statusu w systemie centralnym.
+                    \item Aplikacja wyświetla błąd i może zachować poprzedni status lub ponawiać próbę aktualizacji.
+                \end{enumerate}
+            \item \textbf{W2: Próba zmiany statusu na "Offline" podczas realizacji kursu.}
+                \begin{enumerate}
+                    \item Kierowca próbuje zmienić status na "Offline" będąc w trakcie realizacji aktywnego kursu.
+                    \item System może zablokować taką możliwość do momentu zakończenia bieżącego zlecenia lub wyświetlić ostrzeżenie.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Scenariusze dla modułu: Bilety Kolejowe}
+W tej sekcji przedstawiono szczegółowe scenariusze przypadków użycia związane z funkcjonalnościami zakupu i zarządzania biletami kolejowymi w systemie OpenTravel. Obejmują one procesy od wyszukiwania połączeń, poprzez zakup biletu, aż po zarządzanie rezerwacją i uzyskiwanie powiadomień.
+
+\subsubsection{PU-BK-01: Wyszukiwanie połączeń kolejowych}
+\begin{itemize}
+\item \textbf{Nazwa przypadku użycia:} Wyszukiwanie połączeń kolejowych
+\item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi wyszukiwanie dostępnych połączeń kolejowych na podstawie określonych kryteriów, takich jak stacja początkowa i docelowa, data i godzina podróży, liczba pasażerów oraz preferencje dotyczące pociągu.
+\item \textbf{Aktorzy biorący udział:} Użytkownik, Przewoźnik Kolejowy (system zewnętrzny - jako źródło danych)
+\item \textbf{Uzasadnienie:} Podstawowa funkcja modułu kolejowego, umożliwiająca użytkownikowi znalezienie odpowiednich połączeń do dalszego planowania podróży i zakupu biletu.
+\item \textbf{Warunki początkowe:}
+\begin{itemize}
+\item Użytkownik ma dostęp do aplikacji OpenTravel i jest w sekcji wyszukiwania połączeń kolejowych.
+\item System ma aktywne połączenie z systemami zewnętrznymi Przewoźników Kolejowych.
+\item Opcjonalnie: Użytkownik jest zalogowany i może mieć zapisane preferencje dotyczące podróży koleją.
+\end{itemize}
+\item \textbf{Warunki końcowe:}
+\begin{itemize}
+\item System wyświetla listę dostępnych połączeń kolejowych spełniających kryteria wprowadzone przez użytkownika (lub komunikat o braku wyników).
+\item Wyniki wyszukiwania zawierają kluczowe informacje o każdym połączeniu: stacje, daty i godziny odjazdu/przyjazdu, czas trwania podróży, rodzaj pociągu, dostępne klasy, orientacyjną cenę oraz liczbę przesiadek.
+\end{itemize}
+\item \textbf{Główny ciąg zdarzeń:}
+\begin{enumerate}
+\item Użytkownik wybiera opcję wyszukiwania połączeń kolejowych.
+\item System wyświetla formularz wyszukiwania, zawierający co najmniej następujące pola:
+\begin{itemize}
+\item Stacja początkowa (pole tekstowe z autouzupełnianiem lub wybór z listy).
+\item Stacja docelowa (pole tekstowe z autouzupełnianiem lub wybór z listy).
+\item Data wyjazdu (wybór z kalendarza).
+\item Godzina wyjazdu (opcjonalnie, wybór z listy lub wpisanie).
+\item Data powrotu i godzina powrotu (opcjonalnie, dla biletów w obie strony).
+\item Liczba pasażerów (z podziałem na kategorie wiekowe/zniżkowe, np. dorośli, studenci, dzieci).
+\item Opcjonalnie: Preferencje dotyczące połączenia (np. tylko bezpośrednie, preferowany typ pociągu, klasa).
+\end{itemize}
+\item Użytkownik wypełnia obowiązkowe pola formularza (stacja początkowa, stacja docelowa, data wyjazdu).
+\item Użytkownik opcjonalnie wypełnia pozostałe pola i preferencje.
+\item Użytkownik inicjuje wyszukiwanie (np. poprzez naciśnięcie przycisku "Szukaj połączeń").
+\item System OpenTravel wysyła sformułowane zapytanie do zintegrowanych systemów Przewoźników Kolejowych.
+\item System OpenTravel odbiera odpowiedzi od systemów zewnętrznych.
+\item System przetwarza, agreguje i filtruje otrzymane wyniki, sortując je domyślnie (np. według najwcześniejszej godziny odjazdu lub najniższej ceny).
+\item System wyświetla użytkownikowi listę znalezionych połączeń kolejowych, prezentując dla każdego: nazwę przewoźnika, stację początkową i docelową, godziny odjazdu i przyjazdu, czas podróży, liczbę przesiadek, typ pociągu, oraz orientacyjną cenę minimalną.
+\end{enumerate}
+\item \textbf{Alternatywne ciągi zdarzeń:}
+\begin{itemize}
+\item \textbf{A1: Wyszukiwanie połączenia w obie strony.}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 3 Głównego ciągu zdarzeń.} Użytkownik podaje również datę i (opcjonalnie) godzinę powrotu.
+\item System w kroku 8 i 9 prezentuje opcje podróży "tam" i "z powrotem", umożliwiając ich łączenie.
+\end{enumerate}
+\item \textbf{A2: Zastosowanie zapisanych preferencji.}
+\begin{enumerate}
+\item \textit{Kontekst: Krok 2 Głównego ciągu zdarzeń.} Jeśli użytkownik jest zalogowany i ma zapisane preferencje (np. ulubione stacje, domyślna liczba pasażerów), system wstępnie wypełnia nimi formularz.
+\item Użytkownik może zaakceptować te preferencje lub je zmodyfikować.
+\end{enumerate}
+\item \textbf{A3: Modyfikacja filtrów i sortowania po wyświetleniu wyników.}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 9 Głównego ciągu zdarzeń.} Użytkownik korzysta z opcji filtrowania (np. wg ceny, czasu podróży, liczby przesiadek, przewoźnika) lub sortowania wyników.
+\item System aktualizuje wyświetlaną listę zgodnie z wybranymi kryteriami.
+\end{enumerate}
+\end{itemize}
+\item \textbf{Sytuacje wyjątkowe:}
+\begin{itemize}
+\item \textbf{W1: Nieprawidłowe dane w formularzu wyszukiwania.}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 5 Głównego ciągu zdarzeń.} System wykrywa błędy walidacji (np. data wyjazdu z przeszłości, stacja początkowa taka sama jak docelowa, brak obowiązkowych pól).
+\item System wyświetla stosowne komunikaty o błędach przy odpowiednich polach formularza.
+\item Użytkownik ma możliwość poprawienia danych. Scenariusz wraca do kroku 3 Głównego ciągu zdarzeń.
+\end{enumerate}
+\item \textbf{W2: Brak wyników wyszukiwania.}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 8 Głównego ciągu zdarzeń.} Systemy zewnętrzne nie zwracają żadnych połączeń kolejowych spełniających kryteria użytkownika.
+\item System wyświetla komunikat: "Nie znaleziono połączeń dla podanych kryteriów. Spróbuj zmienić parametry wyszukiwania."
+\item System może zasugerować modyfikację kryteriów (np. zmiana daty, godziny, wybór pobliskich stacji).
+\end{enumerate}
+\item \textbf{W3: Błąd komunikacji z systemem Przewoźnika Kolejowego.}
+\begin{enumerate}
+\item \textit{Kontekst: Podczas kroku 7 lub 8 Głównego ciągu zdarzeń.} System OpenTravel napotyka problem z komunikacją z systemem Przewoźnika Kolejowego (np. timeout, błąd serwera dostawcy).
+\item System wyświetla komunikat: "Wystąpił chwilowy problem z połączeniem z systemem przewoźnika. Spróbuj ponownie później." Wyniki mogą być niekompletne lub niedostępne.
+\end{enumerate}
+\end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BK-02: Wyświetlanie szczegółów połączenia kolejowego}
+\begin{itemize}
+\item \textbf{Nazwa przypadku użycia:} Wyświetlanie szczegółów połączenia kolejowego
+\item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi wyświetlenie pełnych, szczegółowych informacji o wybranym połączeniu kolejowym z listy wyników wyszukiwania.
+\item \textbf{Aktorzy biorący udział:} Użytkownik, Przewoźnik Kolejowy (system zewnętrzny - jako źródło danych)
+\item \textbf{Uzasadnienie:} Dostarczenie użytkownikowi wszystkich niezbędnych informacji do podjęcia świadomej decyzji o wyborze i ewentualnym zakupie biletu na konkretne połączenie.
+\item \textbf{Warunki początkowe:}
+\begin{itemize}
+\item Użytkownik przeprowadził wyszukiwanie połączeń kolejowych (zakończony PU-BK-01).
+\item System wyświetla listę wyników wyszukiwania.
+\item Użytkownik wybiera jedno konkretne połączenie z listy.
+\end{itemize}
+\item \textbf{Warunki końcowe:}
+\begin{itemize}
+\item System wyświetla dedykowany ekran ze szczegółowymi informacjami o wybranym połączeniu kolejowym.
+\item Użytkownik ma dostęp do wszystkich istotnych danych dotyczących połączenia i opcję przejścia do kolejnych kroków (np. wybór miejsca, dodanie pasażerów, zakup).
+\end{itemize}
+\item \textbf{Główny ciąg zdarzeń:}
+\begin{enumerate}
+\item Użytkownik wybiera (np. klika) konkretne połączenie kolejowe z wyświetlonej listy wyników.
+\item System OpenTravel wysyła zapytanie o pełne szczegóły wybranego połączenia do systemu Przewoźnika Kolejowego (jeśli dane nie zostały pobrane w całości podczas wyszukiwania lub wymagają dynamicznej aktualizacji, np. dokładne ceny dla różnych taryf, dostępność miejsc).
+\item System odbiera szczegółowe dane o połączeniu od systemu zewnętrznego.
+\item System wyświetla ekran ze szczegółami połączenia, zawierający co najmniej:
+\begin{itemize}
+\item Nazwa i logo Przewoźnika Kolejowego.
+\item Trasa połączenia: stacja początkowa, stacja docelowa, ewentualne stacje przesiadkowe i czas przesiadki.
+\item Szczegółowy rozkład jazdy: godziny odjazdu i przyjazdu dla każdego odcinka podróży.
+\item Całkowity czas podróży.
+\item Numer(y) pociągu(ów), kategoria pociągu (np. EIP, IC, TLK, Regio).
+\item Dostępne klasy (np. 1 klasa, 2 klasa) i rodzaje wagonów (np. przedziałowy, bezprzedziałowy, sypialny – jeśli dotyczy).
+\item Dokładna cena biletu dla wybranej liczby pasażerów i domyślnej taryfy/klasy (lub opcje wyboru taryf).
+\item Informacje o dostępnych usługach w pociągu (np. Wi-Fi, wagon gastronomiczny, klimatyzacja, udogodnienia dla niepełnosprawnych – jeśli dane są dostępne).
+\item Warunki taryfowe (np. możliwość zwrotu, wymiany biletu – jeśli dane są dostępne).
+\end{itemize}
+\item System wyświetla wyraźnie widoczną opcję (np. przycisk "Wybierz ten pociąg", "Przejdź do zakupu") umożliwiającą użytkownikowi kontynuowanie procesu.
+\end{enumerate}
+\item \textbf{Alternatywne ciągi zdarzeń:}
+\begin{itemize}
+\item \textbf{A1: Wyświetlanie różnych opcji taryfowych/cenowych dla tego samego połączenia.}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 3 Głównego ciągu zdarzeń.} System Przewoźnika Kolejowego zwraca informacje o różnych dostępnych taryfach (np. normalna, ulgowa, promocyjna) lub cenach dla różnych klas/miejscówek dla tego samego połączenia.
+\item System OpenTravel prezentuje te opcje użytkownikowi, umożliwiając wybór preferowanej taryfy/ceny. Szczegóły i cena są aktualizowane dynamicznie.
+\end{enumerate}
+\end{itemize}
+\item \textbf{Sytuacje wyjątkowe:}
+\begin{itemize}
+\item \textbf{W1: Cena lub dostępność połączenia uległa zmianie.}
+\begin{enumerate}
+\item \textit{Kontekst: Podczas kroku 3 Głównego ciągu zdarzeń.} System Przewoźnika Kolejowego informuje, że cena lub dostępność miejsc dla wybranego połączenia uległa zmianie od czasu wyświetlenia na liście wyników.
+\item System OpenTravel natychmiast wyświetla zaktualizowane informacje użytkownikowi (nowa cena, informacja o braku dostępności).
+\item Jeśli połączenie jest całkowicie niedostępne, użytkownik jest o tym informowany i zachęcany do powrotu do listy wyników.
+\item Jeśli cena się zmieniła, użytkownik widzi nową cenę i może podjąć decyzję o kontynuacji lub rezygnacji.
+\end{enumerate}
+\item \textbf{W2: Błąd pobierania szczegółów połączenia z systemu zewnętrznego.}
+\begin{enumerate}
+\item \textit{Kontekst: Podczas kroku 3 Głównego ciągu zdarzeń.} System OpenTravel napotyka błąd podczas komunikacji z systemem Przewoźnika Kolejowego.
+\item System wyświetla komunikat: "Nie można załadować szczegółów połączenia. Spróbuj ponownie."
+\item Użytkownik może mieć możliwość ponowienia próby lub powrotu do listy wyników.
+\end{enumerate}
+\end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BK-03: Wybór miejsca w pociągu}
+\begin{itemize}
+\item \textbf{Nazwa przypadku użycia:} Wybór miejsca w pociągu
+\item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi wybór konkretnego miejsca lub preferencji dotyczących miejsca (np. przy oknie, przy korytarzu, kierunek jazdy) w pociągu, jeśli usługa rezerwacji miejsc jest dostępna dla danego połączenia i przewoźnika.
+\item \textbf{Aktorzy biorący udział:} Użytkownik, Przewoźnik Kolejowy (system zewnętrzny)
+\item \textbf{Uzasadnienie:} Zwiększenie komfortu podróży użytkownika poprzez umożliwienie mu wyboru preferowanego miejsca, zgodnie z jego oczekiwaniami.
+\item \textbf{Warunki początkowe:}
+\begin{itemize}
+\item Użytkownik wybrał konkretne połączenie kolejowe i przeszedł do etapu konfiguracji biletu (po PU-BK-02).
+\item Wybrane połączenie i przewoźnik oferują możliwość graficznej lub opisowej rezerwacji miejsc.
+\item System OpenTravel ma integrację z systemem rezerwacji miejsc Przewoźnika Kolejowego.
+\end{itemize}
+\item \textbf{Warunki końcowe:}
+\begin{itemize}
+\item Użytkownik wybrał miejsce(a) w pociągu lub określił preferencje dotyczące miejsca.
+\item Wybrane miejsca są tymczasowo zarezerwowane w systemie Przewoźnika Kolejowego na czas dokończenia transakcji zakupu biletu.
+\item Jeśli wybór miejsca nie jest możliwy, użytkownik jest o tym informowany, a system może przydzielić miejsca automatycznie.
+\end{itemize}
+\item \textbf{Główny ciąg zdarzeń (Graficzny wybór miejsca):}
+\begin{enumerate}
+\item System informuje użytkownika o możliwości wyboru miejsca.
+\item Użytkownik wybiera opcję "Wybierz miejsce".
+\item System OpenTravel wysyła zapytanie do systemu Przewoźnika Kolejowego o schemat graficzny wagonu(ów) z dostępnymi miejscami dla wybranego pociągu i klasy.
+\item System Przewoźnika Kolejowego zwraca schemat wagonu(ów) z oznaczeniem miejsc zajętych, wolnych i ewentualnie specjalnych (np. dla niepełnosprawnych, z większą przestrzenią na nogi).
+\item System OpenTravel wyświetla użytkownikowi interaktywny schemat wagonu(ów).
+\item Użytkownik wybiera jedno lub więcej miejsc na schemacie (zgodnie z liczbą pasażerów).
+\item System podświetla wybrane miejsca i wyświetla ich numery.
+\item Użytkownik potwierdza wybór miejsc.
+\item System OpenTravel wysyła informację o wybranych miejscach do systemu Przewoźnika Kolejowego w celu ich tymczasowej rezerwacji.
+\item System Przewoźnika Kolejowego potwierdza tymczasową rezerwację wybranych miejsc.
+\item System OpenTravel informuje użytkownika o pomyślnym wyborze i tymczasowej rezerwacji miejsc.
+\end{enumerate}
+\item \textbf{Główny ciąg zdarzeń (Wybór preferencji miejsca):}
+\begin{enumerate}
+\item System informuje użytkownika o możliwości wyboru preferencji miejsca.
+\item Użytkownik wybiera opcję "Określ preferencje miejsca".
+\item System wyświetla listę dostępnych preferencji (np. miejsce przy oknie, miejsce przy korytarzu, kierunek jazdy, cichy przedział – w zależności od oferty przewoźnika).
+\item Użytkownik zaznacza wybrane preferencje.
+\item Użytkownik potwierdza wybór preferencji.
+\item System OpenTravel zapisuje preferencje użytkownika i przekaże je do systemu Przewoźnika Kolejowego podczas finalizacji zakupu. Miejsca zostaną przydzielone automatycznie z uwzględnieniem tych preferencji, jeśli to możliwe.
+\item System OpenTravel informuje użytkownika o zapisaniu preferencji.
+\end{enumerate}
+\item \textbf{Alternatywne ciągi zdarzeń:}
+\begin{itemize}
+\item \textbf{A1: Brak możliwości wyboru miejsca/preferencji.}
+\begin{enumerate}
+\item \textit{Kontekst: Krok 1 Głównego ciągu zdarzeń.} System Przewoźnika Kolejowego nie oferuje możliwości wyboru miejsca lub preferencji dla danego połączenia/taryfy.
+\item System OpenTravel informuje użytkownika: "Dla tego połączenia miejsca są przydzielane automatycznie." Miejsca zostaną przydzielone losowo lub według algorytmu przewoźnika.
+\end{enumerate}
+\item \textbf{A2: Wybrane miejsce jest już niedostępne (dla graficznego wyboru).}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 8 Głównego ciągu zdarzeń (Graficzny wybór miejsca).} System Przewoźnika Kolejowego informuje, że jedno z wybranych miejsc zostało w międzyczasie zajęte.
+\item System OpenTravel odświeża schemat wagonu i informuje użytkownika o konieczności wyboru innego miejsca. Scenariusz wraca do kroku 6 Głównego ciągu zdarzeń (Graficzny wybór miejsca).
+\end{enumerate}
+\item \textbf{A3: Użytkownik rezygnuje z wyboru miejsca/preferencji.}
+\begin{enumerate}
+\item \textit{Kontekst: Przed potwierdzeniem wyboru.} Użytkownik wybiera opcję "Pomiń" lub "Przydziel automatycznie".
+\item Miejsca zostaną przydzielone automatycznie przez system Przewoźnika Kolejowego.
+\end{enumerate}
+\end{itemize}
+\item \textbf{Sytuacje wyjątkowe:}
+\begin{itemize}
+\item \textbf{W1: Błąd komunikacji z systemem rezerwacji miejsc Przewoźnika Kolejowego.}
+\begin{enumerate}
+\item \textit{Kontekst: Podczas kroku 3, 9 lub 10 (Graficzny wybór) lub 6 (Wybór preferencji).} System OpenTravel napotyka problem z komunikacją.
+\item System wyświetla komunikat: "Wystąpił problem z systemem rezerwacji miejsc. Spróbuj ponownie później lub kontynuuj bez wyboru miejsca (miejsca zostaną przydzielone automatycznie)."
+\end{enumerate}
+\item \textbf{W2: Brak dostępnych miejsc spełniających preferencje.}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 6 Głównego ciągu zdarzeń (Wybór preferencji).} System Przewoźnika Kolejowego informuje (np. podczas finalizacji zakupu), że nie ma dostępnych miejsc spełniających wszystkie wybrane preferencje.
+\item System OpenTravel może zaproponować użytkownikowi kontynuację z automatycznym przydziałem miejsc lub zmianę preferencji.
+\end{enumerate}
+\end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BK-04: Dodawanie danych pasażera}
+\begin{itemize}
+\item \textbf{Nazwa przypadku użycia:} Dodawanie danych pasażera
+\item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi wprowadzenie lub potwierdzenie danych osobowych pasażerów, dla których kupowane są bilety kolejowe, w tym informacji o ewentualnych zniżkach.
+\item \textbf{Aktorzy biorący udział:} Użytkownik
+\item \textbf{Uzasadnienie:} Zapewnienie poprawnych danych na biletach kolejowych, co jest niezbędne do ich ważności oraz ewentualnej kontroli. Umożliwienie skorzystania z przysługujących ulg.
+\item \textbf{Warunki początkowe:}
+\begin{itemize}
+\item Użytkownik wybrał połączenie kolejowe i (opcjonalnie) miejsce w pociągu.
+\item Użytkownik przeszedł do etapu wprowadzania danych pasażerów.
+\item System zna liczbę i typy pasażerów zadeklarowane podczas wyszukiwania.
+\end{itemize}
+\item \textbf{Warunki końcowe:}
+\begin{itemize}
+\item Dane wszystkich pasażerów zostały poprawnie wprowadzone i zwalidowane.
+\item Informacje o zniżkach zostały przypisane do odpowiednich pasażerów.
+\item System jest gotowy do przejścia do etapu płatności.
+\end{itemize}
+\item \textbf{Główny ciąg zdarzeń:}
+\begin{enumerate}
+\item System wyświetla formularz do wprowadzenia danych dla każdego pasażera (zgodnie z liczbą zadeklarowaną wcześniej). Dla każdego pasażera wymagane są co najmniej:
+\begin{itemize}
+\item Imię.
+\item Nazwisko.
+\item Opcjonalnie, w zależności od wymagań przewoźnika lub rodzaju biletu: rodzaj i numer dokumentu tożsamości, data urodzenia.
+\end{itemize}
+\item Jeśli użytkownik jest zalogowany i podróżuje sam, system może wstępnie wypełnić jego dane.
+\item Dla każdego pasażera system umożliwia wybór przysługującej zniżki (np. student, dziecko, senior) z listy dostępnych u danego przewoźnika.
+\item Użytkownik wprowadza dane dla każdego pasażera oraz wybiera odpowiednie zniżki.
+\item Jeśli dla zniżki wymagany jest numer dokumentu uprawniającego do zniżki (np. numer legitymacji studenckiej), system prosi o jego wprowadzenie.
+\item Użytkownik potwierdza wprowadzone dane.
+\item System dokonuje walidacji wprowadzonych danych (np. kompletność, format).
+\item System oblicza ostateczną cenę biletów z uwzględnieniem wybranych zniżek.
+\item System wyświetla podsumowanie danych pasażerów i ostateczną cenę.
+\end{enumerate}
+\item \textbf{Alternatywne ciągi zdarzeń:}
+\begin{itemize}
+\item \textbf{A1: Wybór pasażera z zapisanej listy (dla zalogowanego użytkownika).}
+\begin{enumerate}
+\item \textit{Kontekst: Krok 1 Głównego ciągu zdarzeń.} System wyświetla opcję "Wybierz z zapisanych pasażerów".
+\item Użytkownik wybiera pasażerów ze swojej zapisanej listy. Ich dane są automatycznie wczytywane do formularza.
+\item Użytkownik może edytować wczytane dane lub zniżki.
+\end{enumerate}
+\item \textbf{A2: Dodawanie nowego pasażera do zapisanej listy (dla zalogowanego użytkownika).}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 4 Głównego ciągu zdarzeń.} Po wprowadzeniu danych nowego pasażera, system pyta, czy zapisać go na liście pasażerów użytkownika.
+\item Użytkownik wyraża zgodę. Dane pasażera są zapisywane w profilu użytkownika.
+\end{enumerate}
+\end{itemize}
+\item \textbf{Sytuacje wyjątkowe:}
+\begin{itemize}
+\item \textbf{W1: Nieprawidłowe dane pasażera lub brak wymaganych danych.}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 7 Głównego ciągu zdarzeń.} System wykrywa błędy walidacji (np. brak imienia, niepoprawny format numeru dokumentu).
+\item System wyświetla komunikaty o błędach przy odpowiednich polach.
+\item Użytkownik ma możliwość poprawienia danych. Scenariusz wraca do kroku 4 Głównego ciągu zdarzeń.
+\end{enumerate}
+\item \textbf{W2: Wybrana zniżka wymaga dodatkowej weryfikacji lub nie jest dostępna.}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 5 Głównego ciągu zdarzeń.} System Przewoźnika Kolejowego (lub wewnętrzne reguły systemu) informuje, że wybrana zniżka nie może być zastosowana (np. niekompatybilna z taryfą, wygasła promocja) lub wymaga okazania dodatkowych dokumentów przy kontroli, o czym system informuje użytkownika.
+\item System wyświetla stosowny komunikat. Użytkownik może być poproszony o zmianę zniżki lub kontynuację bez niej.
+\end{enumerate}
+\end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BK-05: Zakup biletu kolejowego}
+\begin{itemize}
+\item \textbf{Nazwa przypadku użycia:} Zakup biletu kolejowego
+\item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi finalizację transakcji zakupu biletu kolejowego poprzez dokonanie płatności za wybrane połączenie i pasażerów.
+\item \textbf{Aktorzy biorący udział:} Użytkownik, Przewoźnik Kolejowy (system zewnętrzny), Dostawca Usług Płatności (system zewnętrzny)
+\item \textbf{Uzasadnienie:} Kluczowa funkcjonalność umożliwiająca nabycie prawa do przejazdu pociągiem.
+\item \textbf{Warunki początkowe:}
+\begin{itemize}
+\item Użytkownik wybrał połączenie kolejowe, (opcjonalnie) miejsca oraz wprowadził i potwierdził dane wszystkich pasażerów (zakończony PU-BK-04).
+\item System wyświetla ostateczne podsumowanie zamówienia, w tym łączną kwotę do zapłaty.
+\item Użytkownik posiada zdefiniowaną metodę płatności w systemie lub jest gotowy ją dodać/wprowadzić.
+\end{itemize}
+\item \textbf{Warunki końcowe:}
+\begin{itemize}
+\item Bilet(y) kolejowe zostały pomyślnie zakupione.
+\item Płatność została przetworzona i potwierdzona.
+\item Użytkownik otrzymał potwierdzenie zakupu oraz bilet(y) w formie elektronicznej (np. PDF, kod QR w aplikacji, e-mail).
+\item Zakupiony bilet(y) są widoczne w historii podróży użytkownika w systemie OpenTravel.
+\item Odpowiednie dane rezerwacyjne zostały przesłane i potwierdzone przez system Przewoźnika Kolejowego.
+\end{itemize}
+\item \textbf{Główny ciąg zdarzeń:}
+\begin{enumerate}
+\item Użytkownik, po zapoznaniu się z podsumowaniem zamówienia, wybiera opcję "Przejdź do płatności" lub "Kup bilet".
+\item System wyświetla dostępne metody płatności (np. zapisane karty, BLIK, szybki przelew).
+\item Użytkownik wybiera preferowaną metodę płatności.
+\item Jeśli wybrano nową metodę płatności, użytkownik wprowadza niezbędne dane (np. numer karty, kod BLIK).
+\item Użytkownik potwierdza chęć dokonania płatności i autoryzuje transakcję (np. wprowadza kod CVV/CVC, potwierdza w aplikacji bankowej).
+\item System OpenTravel inicjuje transakcję płatniczą, przekazując niezbędne dane do systemu Dostawcy Usług Płatności w bezpieczny sposób.
+\item Dostawca Usług Płatności przetwarza płatność.
+\item System OpenTravel otrzymuje potwierdzenie pomyślnego przetworzenia płatności od Dostawcy Usług Płatności.
+\item System OpenTravel wysyła żądanie finalizacji zakupu biletu wraz z potwierdzeniem płatności do systemu Przewoźnika Kolejowego.
+\item System Przewoźnika Kolejowego potwierdza sprzedaż biletu i generuje dane biletu elektronicznego (np. numer biletu, kod QR).
+\item System OpenTravel zapisuje dane biletu w profilu użytkownika oraz w swojej bazie danych.
+\item System wyświetla użytkownikowi na ekranie potwierdzenie zakupu wraz z kluczowymi informacjami o bilecie.
+\item System wysyła automatyczne potwierdzenie zakupu wraz z biletem elektronicznym (lub linkiem do jego pobrania) na adres e-mail użytkownika i/lub generuje powiadomienie w aplikacji z dostępem do biletu.
+\end{enumerate}
+\item \textbf{Alternatywne ciągi zdarzeń:}
+\begin{itemize}
+\item \textbf{A1: Płatność zapisaną metodą.}
+\begin{enumerate}
+\item \textit{Kontekst: Krok 3 Głównego ciągu zdarzeń.} Użytkownik wybiera jedną z wcześniej zapisanych metod płatności.
+\item System może poprosić o dodatkowe potwierdzenie (np. hasło do konta OpenTravel lub kod CVV/CVC dla karty).
+\end{enumerate}
+\end{itemize}
+\item \textbf{Sytuacje wyjątkowe:}
+\begin{itemize}
+\item \textbf{W1: Niepowodzenie płatności.}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 7 Głównego ciągu zdarzeń.} Dostawca Usług Płatności odrzuca transakcję (np. brak środków, błędne dane, odrzucenie przez bank).
+\item System OpenTravel otrzymuje informację o niepowodzeniu płatności.
+\item System informuje użytkownika o problemie z płatnością i umożliwia wybór innej metody, poprawę danych lub ponowienie próby. Scenariusz wraca do kroku 2 Głównego ciągu zdarzeń.
+\end{enumerate}
+\item \textbf{W2: Błąd potwierdzenia rezerwacji przez Przewoźnika Kolejowego po dokonaniu płatności.}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 9 Głównego ciągu zdarzeń.} System Przewoźnika Kolejowego zwraca błąd lub nie potwierdza sprzedaży biletu pomimo autoryzowanej płatności (np. miejsca zostały wyprzedane w ostatniej chwili, błąd techniczny po stronie przewoźnika).
+\item System OpenTravel informuje użytkownika o problemie z finalizacją zakupu.
+\item System OpenTravel inicjuje proces anulowania autoryzacji płatności lub zwrotu środków we współpracy z Dostawcą Usług Płatności.
+\item Użytkownik jest zachęcany do ponownego wyszukania połączenia lub kontaktu z obsługą klienta.
+\end{enumerate}
+\item \textbf{W3: Błąd techniczny systemu OpenTravel, Dostawcy Usług Płatności lub Przewoźnika Kolejowego.}
+\begin{enumerate}
+\item \textit{Kontekst: Na dowolnym etapie.} Występuje nieoczekiwany błąd wewnętrzny.
+\item System wyświetla ogólny komunikat o błędzie technicznym i sugeruje ponowienie próby później lub kontakt z obsługą klienta.
+\item Transakcja nie dochodzi do skutku lub, jeśli błąd wystąpił po płatności, system podejmuje działania w celu wyjaśnienia statusu i ewentualnego zwrotu środków.
+\end{enumerate}
+\item \textbf{W4: Sesja użytkownika wygasła podczas procesu zakupu.}
+\begin{enumerate}
+\item \textit{Kontekst: Na dowolnym etapie, np. podczas płatności.} Użytkownik zbyt długo nie podejmuje akcji, co powoduje wygaśnięcie sesji lub tymczasowej rezerwacji.
+\item System informuje użytkownika o wygaśnięciu sesji i konieczności rozpoczęcia procesu od nowa.
+\end{enumerate}
+\end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BK-06: Otrzymywanie powiadomień o zmianach dotyczących podróży koleją}
+\begin{itemize}
+\item \textbf{Nazwa przypadku użycia:} Otrzymywanie powiadomień o zmianach dotyczących podróży koleją
+\item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi otrzymywanie automatycznych powiadomień (np. push, SMS, e-mail) o istotnych zmianach dotyczących jego zakupionego biletu kolejowego, takich jak opóźnienia, odwołania pociągu, zmiana peronu.
+\item \textbf{Aktorzy biorący udział:} Użytkownik, System OpenTravel (moduł powiadomień), Przewoźnik Kolejowy (system zewnętrzny - jako źródło informacji o zmianach)
+\item \textbf{Uzasadnienie:} Zapewnienie użytkownikowi aktualnych informacji o jego podróży, co pozwala na odpowiednie przygotowanie się i minimalizację niedogodności związanych ze zmianami w kursowaniu pociągów.
+\item \textbf{Warunki początkowe:}
+\begin{itemize}
+\item Użytkownik zakupił bilet kolejowy za pośrednictwem systemu OpenTravel.
+\item Użytkownik wyraził zgodę na otrzymywanie powiadomień (w ustawieniach aplikacji lub podczas zakupu).
+\item System OpenTravel ma możliwość integracji z systemem informacyjnym Przewoźnika Kolejowego w celu uzyskiwania danych o zmianach w czasie rzeczywistym lub z opóźnieniem.
+\end{itemize}
+\item \textbf{Warunki końcowe:}
+\begin{itemize}
+\item Użytkownik otrzymuje powiadomienia o istotnych zmianach dotyczących jego podróży koleją, zgodnie z preferencjami.
+\end{itemize}
+\item \textbf{Główny ciąg zdarzeń (Proces automatyczny w tle):}
+\begin{enumerate}
+\item System OpenTravel cyklicznie monitoruje (lub otrzymuje poprzez webhook/subskrypcję) informacje o statusie pociągów, dla których użytkownicy posiadają aktywne bilety, od systemów Przewoźników Kolejowych.
+\item W przypadku wykrycia istotnej zmiany dotyczącej podróży użytkownika (np. opóźnienie pociągu o X minut, odwołanie pociągu, zmiana peronu odjazdu/przyjazdu, zmiana trasy):
+\begin{itemize}
+\item System OpenTravel identyfikuje użytkowników, których dotyczy zmiana.
+\item System generuje treść powiadomienia zawierającą szczegóły zmiany.
+\item System wysyła powiadomienie do użytkownika za pośrednictwem preferowanych przez niego kanałów (np. powiadomienie push w aplikacji, SMS, e-mail).
+\end{itemize}
+\item Użytkownik odbiera powiadomienie.
+\item W aplikacji OpenTravel, w szczegółach podróży, informacja o zmianie jest również aktualizowana.
+\end{enumerate}
+\item \textbf{Alternatywne ciągi zdarzeń:}
+\begin{itemize}
+\item \textbf{A1: Użytkownik konfiguruje preferencje powiadomień.}
+\begin{enumerate}
+\item W ustawieniach konta lub aplikacji, użytkownik może wybrać, jakie typy powiadomień kolejowych chce otrzymywać (np. tylko o odwołaniach i dużych opóźnieniach) oraz preferowany kanał komunikacji.
+\end{enumerate}
+\end{itemize}
+\item \textbf{Sytuacje wyjątkowe:}
+\begin{itemize}
+\item \textbf{W1: Brak informacji o zmianach od Przewoźnika Kolejowego.}
+\begin{enumerate}
+\item System Przewoźnika Kolejowego nie dostarcza informacji o danej zmianie lub dostarcza je z opóźnieniem.
+\item System OpenTravel nie może powiadomić użytkownika o zmianie, której nie otrzymał. Powiadomienie może przyjść z opóźnieniem.
+\end{enumerate}
+\item \textbf{W2: Problem techniczny z wysyłką powiadomienia.}
+\begin{enumerate}
+\item System OpenTravel napotyka problem techniczny podczas próby wysłania powiadomienia (np. błąd serwera pocztowego, problem z usługą powiadomień push).
+\item System powinien logować takie błędy i ewentualnie ponawiać próbę wysyłki. Użytkownik może nie otrzymać powiadomienia lub otrzymać je z opóźnieniem.
+\end{enumerate}
+\item \textbf{W3: Użytkownik ma wyłączone powiadomienia lub brak zgody.}
+\begin{enumerate}
+\item Użytkownik nie wyraził zgody na otrzymywanie powiadomień lub wyłączył je w ustawieniach.
+\item System nie wysyła powiadomień. Informacje o zmianach mogą być nadal widoczne po wejściu do szczegółów podróży w aplikacji.
+\end{enumerate}
+\end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BK-07: Anulowanie biletu kolejowego}
+\begin{itemize}
+\item \textbf{Nazwa przypadku użycia:} Anulowanie biletu kolejowego
+\item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi anulowanie zakupionego biletu kolejowego, jeśli warunki taryfowe na to pozwalają, oraz uzyskanie ewentualnego zwrotu środków.
+\item \textbf{Aktorzy biorący udział:} Użytkownik, Przewoźnik Kolejowy (system zewnętrzny), Dostawca Usług Płatności (system zewnętrzny - dla zwrotu środków)
+\item \textbf{Uzasadnienie:} Zapewnienie elastyczności użytkownikom w zarządzaniu swoimi rezerwacjami kolejowymi w przypadku zmiany planów.
+\item \textbf{Warunki początkowe:}
+\begin{itemize}
+\item Użytkownik zakupił bilet kolejowy za pośrednictwem systemu OpenTravel i jest on widoczny w historii podróży.
+\item Użytkownik jest zalogowany.
+\item Warunki taryfowe zakupionego biletu pozwalają na jego anulowanie (ewentualnie z potrąceniem opłaty manipulacyjnej).
+\item Nie upłynął termin, do którego można anulować bilet zgodnie z regulaminem przewoźnika.
+\end{itemize}
+\item \textbf{Warunki końcowe:}
+\begin{itemize}
+\item Bilet kolejowy został pomyślnie anulowany w systemie OpenTravel oraz w systemie Przewoźnika Kolejowego.
+\item Użytkownik otrzymał potwierdzenie anulowania.
+\item Proces zwrotu środków (jeśli dotyczy) został zainicjowany. Kwota zwrotu uwzględnia ewentualne opłaty za anulowanie.
+\item Anulowany bilet jest oznaczony jako nieważny.
+\end{itemize}
+\item \textbf{Główny ciąg zdarzeń:}
+\begin{enumerate}
+\item Użytkownik wybiera opcję "Anuluj bilet" dla konkretnego biletu w swojej historii podróży.
+\item System OpenTravel pobiera z systemu Przewoźnika Kolejowego aktualne warunki anulowania dla danego biletu (np. wysokość ewentualnej opłaty za anulowanie, kwotę do zwrotu).
+\item System wyświetla użytkownikowi warunki anulowania, w tym informację o kwocie, która zostanie zwrócona (lub informację, że zwrot nie przysługuje).
+\item Użytkownik potwierdza chęć anulowania biletu.
+\item System OpenTravel wysyła żądanie anulowania biletu do systemu Przewoźnika Kolejowego.
+\item System Przewoźnika Kolejowego przetwarza żądanie i potwierdza anulowanie biletu.
+\item Jeśli przysługuje zwrot środków, system Przewoźnika Kolejowego lub OpenTravel (w zależności od modelu rozliczeń) inicjuje proces zwrotu środków na konto/metodę płatności użytą przy zakupie, za pośrednictwem Dostawcy Usług Płatności.
+\item System OpenTravel oznacza bilet jako anulowany w swojej bazie danych.
+\item System wyświetla użytkownikowi potwierdzenie anulowania biletu oraz informację o statusie zwrotu środków.
+\item System wysyła potwierdzenie anulowania na adres e-mail użytkownika.
+\end{enumerate}
+\item \textbf{Alternatywne ciągi zdarzeń:}
+\begin{itemize}
+\item \textbf{A1: Anulowanie częściowe rezerwacji (jeśli dotyczy i jest wspierane).}
+\begin{enumerate}
+\item Jeśli bilet obejmuje wielu pasażerów lub podróż w obie strony, a przewoźnik pozwala na częściowe anulowanie, system może zapytać, których pasażerów lub który odcinek podróży anulować.
+\end{enumerate}
+\end{itemize}
+\item \textbf{Sytuacje wyjątkowe:}
+\begin{itemize}
+\item \textbf{W1: Anulowanie biletu niemożliwe zgodnie z warunkami taryfy lub regulaminem.}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 2 Głównego ciągu zdarzeń.} System Przewoźnika Kolejowego informuje, że bilet nie podlega anulowaniu (np. bilet promocyjny bezzwrotny, upłynął termin na anulowanie).
+\item System OpenTravel wyświetla użytkownikowi komunikat: "Anulowanie tego biletu nie jest możliwe."
+\end{enumerate}
+\item \textbf{W2: Błąd komunikacji z systemem Przewoźnika Kolejowego podczas anulowania.}
+\begin{enumerate}
+\item \textit{Kontekst: Podczas kroku 5 lub 6 Głównego ciągu zdarzeń.} System OpenTravel napotyka problem z komunikacją.
+\item System wyświetla komunikat o błędzie technicznym i informuje, że anulowanie mogło się nie powiéść. Sugeruje kontakt z obsługą klienta.
+\end{enumerate}
+\item \textbf{W3: Problem z przetworzeniem zwrotu środków.}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 7 Głównego ciągu zdarzeń.} Dostawca Usług Płatności lub system Przewoźnika napotyka problem z przetworzeniem zwrotu.
+\item System OpenTravel informuje użytkownika o opóźnieniu lub problemie ze zwrotem i ewentualnych dalszych krokach (np. kontakt z obsługą).
+\end{enumerate}
+\end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BK-08: Wymiana biletu kolejowego}
+\begin{itemize}
+\item \textbf{Nazwa przypadku użycia:} Wymiana biletu kolejowego
+\item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi dokonanie zmiany w zakupionym bilecie kolejowym, np. zmiana daty/godziny podróży, trasy (jeśli warunki taryfowe na to pozwalają). Może to wiązać się z dopłatą lub częściowym zwrotem.
+\item \textbf{Aktorzy biorący udział:} Użytkownik, Przewoźnik Kolejowy (system zewnętrzny), Dostawca Usług Płatności (system zewnętrzny - dla ewentualnej dopłaty/zwrotu)
+\item \textbf{Uzasadnienie:} Zwiększenie elastyczności dla użytkowników, którzy potrzebują zmodyfikować swoje plany podróży po zakupie biletu.
+\item \textbf{Warunki początkowe:}
+\begin{itemize}
+\item Użytkownik zakupił bilet kolejowy za pośrednictwem systemu OpenTravel.
+\item Użytkownik jest zalogowany.
+\item Warunki taryfowe zakupionego biletu pozwalają na jego wymianę.
+\item Nie upłynął termin, do którego można wymienić bilet zgodnie z regulaminem przewoźnika.
+\end{itemize}
+\item \textbf{Warunki końcowe:}
+\begin{itemize}
+\item Stary bilet kolejowy został anulowany, a nowy bilet (zmieniony) został wystawiony i opłacony (lub różnica w cenie uregulowana).
+\item Użytkownik otrzymał potwierdzenie wymiany oraz nowy bilet elektroniczny.
+\item Nowy bilet jest widoczny w historii podróży, a stary oznaczony jako wymieniony/nieważny.
+\end{itemize}
+\item \textbf{Główny ciąg zdarzeń:}
+\begin{enumerate}
+\item Użytkownik wybiera opcję "Wymień bilet" dla konkretnego biletu w historii podróży.
+\item System OpenTravel sprawdza w systemie Przewoźnika Kolejowego, czy bilet kwalifikuje się do wymiany i jakie są jej warunki (np. ewentualne opłaty za wymianę).
+\item System wyświetla użytkownikowi informację o możliwości wymiany i ewentualnych kosztach.
+\item Użytkownik jest proszony o podanie nowych parametrów podróży (nowa data, godzina, ewentualnie nowa trasa – analogicznie do wyszukiwania połączeń PU-BK-01).
+\item System wyszukuje nowe dostępne połączenia zgodnie z podanymi kryteriami.
+\item Użytkownik wybiera nowe połączenie.
+\item System oblicza różnicę w cenie między starym a nowym biletem oraz dolicza ewentualne opłaty za wymianę.
+\item System wyświetla podsumowanie: szczegóły nowego połączenia, informację o anulowaniu starego biletu oraz kwotę do dopłaty lub kwotę do zwrotu.
+\item Jeśli jest kwota do dopłaty, użytkownik przechodzi do procesu płatności (analogicznie do PU-BK-05, kroki 2-8).
+\item Po pomyślnej płatności (jeśli dotyczy) lub jeśli jest zwrot/brak zmiany ceny, system wysyła żądanie wymiany (anulowanie starego biletu i wystawienie nowego) do systemu Przewoźnika Kolejowego.
+\item System Przewoźnika Kolejowego potwierdza wymianę.
+\item System OpenTravel generuje nowy bilet elektroniczny.
+\item System wyświetla użytkownikowi potwierdzenie wymiany i udostępnia nowy bilet. Stary bilet zostaje oznaczony jako wymieniony.
+\item System wysyła potwierdzenie wymiany i nowy bilet na adres e-mail użytkownika.
+\item Jeśli przysługuje częściowy zwrot, proces zwrotu jest inicjowany (analogicznie do PU-BK-07, krok 7).
+\end{enumerate}
+\item \textbf{Alternatywne ciągi zdarzeń:}
+\begin{itemize}
+\item \textbf{A1: Brak różnicy w cenie lub zwrot częściowy.}
+\begin{enumerate}
+\item Jeśli cena nowego biletu (plus opłaty) jest taka sama lub niższa niż starego, krok 9 (płatność) jest pomijany lub modyfikowany na proces zwrotu.
+\end{enumerate}
+\end{itemize}
+\item \textbf{Sytuacje wyjątkowe:}
+\begin{itemize}
+\item \textbf{W1: Wymiana biletu niemożliwa zgodnie z warunkami taryfy lub regulaminem.}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 2 Głównego ciągu zdarzeń.} System Przewoźnika Kolejowego informuje, że bilet nie podlega wymianie.
+\item System OpenTravel wyświetla użytkownikowi stosowny komunikat.
+\end{enumerate}
+\item \textbf{W2: Brak dostępnych połączeń spełniających nowe kryteria użytkownika.}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 5 Głównego ciągu zdarzeń.} System nie znajduje odpowiednich nowych połączeń.
+\item Użytkownik jest informowany i może zmodyfikować kryteria lub anulować proces wymiany.
+\end{enumerate}
+\item \textbf{W3: Błąd komunikacji z systemem Przewoźnika Kolejowego podczas wymiany.}
+\begin{enumerate}
+\item \textit{Kontekst: Na etapach komunikacji z przewoźnikiem.} System napotyka problem z połączeniem.
+\item System wyświetla błąd, proces wymiany jest przerywany. Ewentualna płatność nie jest finalizowana lub jest zwracana.
+\end{enumerate}
+\item \textbf{W4: Niepowodzenie dopłaty (jeśli wymagana).}
+\begin{enumerate}
+\item \textit{Kontekst: Po kroku 9 Głównego ciągu zdarzeń.} Płatność za różnicę w cenie zostaje odrzucona.
+\item Proces wymiany jest wstrzymywany. Użytkownik może spróbować zapłacić inną metodą.
+\end{enumerate}
+\end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BK-09: Pobieranie faktury za bilet kolejowy}
+\begin{itemize}
+\item \textbf{Nazwa przypadku użycia:} Pobieranie faktury za bilet kolejowy
+\item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi pobranie faktury VAT za zakupiony bilet kolejowy, jeśli użytkownik podał dane do faktury podczas zakupu lub ma je zapisane w profilu.
+\item \textbf{Aktorzy biorący udział:} Użytkownik, System OpenTravel, Przewoźnik Kolejowy (system zewnętrzny - jeśli on wystawia fakturę)
+\item \textbf{Uzasadnienie:} Umożliwienie użytkownikom (szczególnie podróżującym służbowo) uzyskania dokumentu księgowego potwierdzającego zakup.
+\item \textbf{Warunki początkowe:}
+\begin{itemize}
+\item Użytkownik zakupił bilet kolejowy za pośrednictwem systemu OpenTravel.
+\item Użytkownik jest zalogowany.
+\item Podczas zakupu biletu użytkownik zaznaczył opcję chęci otrzymania faktury i podał niezbędne dane (NIP, nazwa firmy, adres) lub dane te są zapisane w profilu użytkownika i zostały użyte.
+\item Faktura została wygenerowana przez system OpenTravel lub system Przewoźnika Kolejowego.
+\end{itemize}
+\item \textbf{Warunki końcowe:}
+\begin{itemize}
+\item Użytkownik pomyślnie pobrał fakturę VAT w formie elektronicznej (np. PDF).
+\end{itemize}
+\item \textbf{Główny ciąg zdarzeń:}
+\begin{enumerate}
+\item Użytkownik wybiera opcję "Pobierz fakturę" dla konkretnego zakupionego biletu w historii podróży lub w sekcji "Moje faktury".
+\item System OpenTravel sprawdza, czy faktura dla danego zakupu jest dostępna.
+\item Jeśli faktura jest generowana przez OpenTravel: System pobiera dane faktury ze swojej bazy.
+\item Jeśli faktura jest generowana przez Przewoźnika Kolejowego: System OpenTravel wysyła zapytanie do systemu Przewoźnika o udostępnienie faktury.
+\item System udostępnia użytkownikowi fakturę do pobrania (np. bezpośredni link do pobrania pliku PDF) lub wyświetla ją w aplikacji.
+\item Użytkownik pobiera plik faktury na swoje urządzenie.
+\end{enumerate}
+\item \textbf{Alternatywne ciągi zdarzeń:}
+\begin{itemize}
+\item \textbf{A1: Wysłanie faktury na adres e-mail.}
+\begin{enumerate}
+\item Zamiast pobierania, użytkownik wybiera opcję "Wyślij fakturę na e-mail".
+\item System wysyła fakturę (lub link do niej) na zarejestrowany adres e-mail użytkownika.
+\end{enumerate}
+\item \textbf{A2: Generowanie faktury na żądanie (jeśli nie była automatycznie tworzona).}
+\begin{enumerate}
+\item \textit{Kontekst: Krok 2 Głównego ciągu zdarzeń.} Jeśli faktura nie została automatycznie wygenerowana po zakupie, a użytkownik wyraził taką chęć i podał dane.
+\item Użytkownik wybiera opcję "Wystaw fakturę".
+\item System (lub system Przewoźnika) generuje fakturę. Scenariusz kontynuuje od kroku 3.
+\end{enumerate}
+\end{itemize}
+\item \textbf{Sytuacje wyjątkowe:}
+\begin{itemize}
+\item \textbf{W1: Brak danych do faktury lub nie zaznaczono chęci jej otrzymania.}
+\begin{enumerate}
+\item \textit{Kontekst: Krok 2 Głównego ciągu zdarzeń.} System stwierdza, że użytkownik nie podał danych do faktury lub nie zaznaczył opcji jej otrzymania podczas zakupu.
+\item System wyświetla komunikat: "Nie znaleziono danych do faktury dla tego zakupu. Faktura nie została wystawiona." lub "Aby otrzymać fakturę, prosimy o uzupełnienie danych w profilu i ponowną próbę (jeśli możliwe) lub kontakt z obsługą."
+\end{enumerate}
+\item \textbf{W2: Faktura jest jeszcze niedostępna/w trakcie przetwarzania.}
+\begin{enumerate}
+\item \textit{Kontekst: Krok 2 Głównego ciągu zdarzeń.} System informuje, że faktura jest w trakcie generowania i będzie dostępna później.
+\item System może zaoferować powiadomienie, gdy faktura będzie gotowa.
+\end{enumerate}
+\item \textbf{W3: Błąd pobierania faktury z systemu Przewoźnika Kolejowego.}
+\begin{enumerate}
+\item \textit{Kontekst: Krok 4 Głównego ciągu zdarzeń.} System OpenTravel napotyka problem z komunikacją z systemem Przewoźnika w celu pobrania faktury.
+\item System wyświetla komunikat o błędzie technicznym.
+\end{enumerate}
+\item \textbf{W4: Błąd pobierania pliku faktury.}
+\begin{enumerate}
+\item \textit{Kontekst: Krok 6 Głównego ciągu zdarzeń.} Występuje problem z pobraniem pliku (np. uszkodzony plik, błąd serwera plików).
+\item System wyświetla komunikat o błędzie pobierania.
+\end{enumerate}
+\end{itemize}
 \end{itemize}
 
 \subsection{Scenariusze dla modułu: Bilety Lotnicze}
