@@ -1,0 +1,34 @@
+@startuml
+!include ../../aws-orange-theme.puml
+left to right direction
+title "Przypadki Użycia: Przejazdy Taksówką / Na Żądanie - Część 2"
+
+actor Kierowca
+actor PrzewoznikPrywatny as "Przewoźnik Prywatny" <<system>>
+actor DostawcaUslugPlatnosci as "Dostawca Usług Płatności" <<system>>
+actor Uzytkownik as "Użytkownik"
+
+package "Przejazdy Taksówką / Na Żądanie" {
+  usecase UC_PT7 as "Akceptacja lub odrzucenie zlecenia"
+  usecase UC_PT8 as "Nawigowanie do miejsca\nodbioru pasażera"
+  usecase UC_PT9 as "Zgłaszanie rozpoczęcia kursu"
+  usecase UC_PT10 as "Zgłaszanie zakończenia kursu"
+  usecase UC_PT11 as "Zgłaszanie gotowości\ndo przyjmowania zleceń"
+
+  usecase ProcessPayment as "Przetwarzanie płatności" <<include>>
+}
+
+Kierowca -- UC_PT7
+UC_PT7 -- PrzewoznikPrywatny
+
+Kierowca -- UC_PT8
+
+Kierowca -- UC_PT9
+
+Kierowca -- UC_PT10
+UC_PT10 ..> ProcessPayment : <<include>>
+ProcessPayment -- DostawcaUslugPlatnosci
+
+Kierowca -- UC_PT11
+UC_PT11 -- PrzewoznikPrywatny
+@enduml

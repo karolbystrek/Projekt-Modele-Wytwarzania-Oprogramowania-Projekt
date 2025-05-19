@@ -1,0 +1,1093 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{float}
+
+\geometry{margin=2.5cm}
+
+\title{\textbf{OpenTravel}\\\
+\large{Propozycja kompleksowej platformy do planowania i realizacji podróży}}
+\author{Mateusz Bielówka, Maksim Dziatkou, Patryk Chamera
+\\ Berenike Banek, Karol Bystrek}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{images/logo.png}
+    \label{fig:logo}
+\end{figure}
+
+\newpage
+
+\tableofcontents
+\newpage
+
+\section*{Wprowadzenie i cel projektu}
+Celem projektu OpenTravel jest stworzenie innowacyjnej aplikacji mobilnej, która zintegruje funkcjonalności najpopularniejszych aplikacji transportowych w jednym, intuicyjnym interfejsie.
+Projekt zakłada połączenie możliwości narzędzi takich jak Jakdojade czy Uber, a także aplikacji służących do zakupu biletów kolejowych i wyszukiwania lotów.
+Głównym założeniem jest opracowanie kompleksowej platformy, która ma na celu zaspokojenie wszystkich potrzeb transportowych użytkowników bez konieczności przełączania się między różnymi aplikacjami.
+OpenTravel ma umożliwić płynne planowanie podróży praktycznie każdym środkiem transportu, co stanowi odpowiedź na rosnące zapotrzebowanie na zintegrowane rozwiązania w dziedzinie mobilności.
+
+\section{Ogólny opis systemu i kluczowe funkcjonalności}
+Platforma OpenTravel projektowana jest z myślą o dostarczeniu użytkownikom wszechstronnego narzędzia do zarządzania podróżami. Poniżej przedstawiono kluczowe obszary funkcjonalne, które system ma obejmować.
+
+\subsection*{Transport publiczny}
+W ramach funkcjonalności związanych z transportem publicznym, aplikacja OpenTravel ma oferować możliwość zakupu biletów jednorazowych i okresowych na komunikację miejską, potencjalnie eliminując potrzebę posiadania gotówki czy dedykowanej karty miejskiej.
+Planuje się, że użytkownicy będą mieli dostęp do aktualnych rozkładów jazdy wszystkich środków transportu publicznego, w miarę możliwości w czasie rzeczywistym, oraz będą mogli otrzymywać powiadomienia o ewentualnych opóźnieniach lub zmianach w kursowaniu.
+System ma umożliwiać planowanie optymalnych tras z uwzględnieniem przesiadek oraz zapisywanie najczęściej używanych połączeń dla szybkiego dostępu.
+
+\subsection*{Przejazdy taksówkami}
+Aplikacja ma umożliwiać zamawianie przejazdów taksówkami z precyzyjnym określeniem miejsca odbioru i punktu docelowego.
+Przewiduje się, że przed złożeniem zamówienia użytkownik otrzyma kalkulację przewidywanego kosztu przejazdu oraz będzie miał możliwość wyboru klasy pojazdu (np. standard, premium, pojazd dostosowany do przewozu osób z niepełnosprawnościami).
+W trakcie oczekiwania na taksówkę, użytkownik powinien móc śledzić lokalizację zamówionego pojazdu w czasie rzeczywistym.
+System ma również oferować funkcję oceniania kierowców po zakończonym przejeździe oraz realizację bezgotówkowych rozliczeń bezpośrednio przez aplikację.
+
+\subsection*{Bilety kolejowe}
+W zakresie transportu kolejowego, OpenTravel ma umożliwiać wyszukiwanie dostępnych połączeń krajowych i międzynarodowych oraz zakup biletów na pociągi różnych przewoźników obsługujących dany region.
+Planuje się, że użytkownicy będą mogli korzystać z interaktywnego wyboru miejsca w pociągu z wizualizacją układu wagonu, jeśli API przewoźnika na to pozwoli.
+Zakupione bilety mają być przechowywane w formie elektronicznej, gotowe do kontroli.
+Aplikacja ma również za zadanie dostarczać powiadomienia o opóźnieniach, odwołaniach lub zmianach peronów, a także potencjalnie integrować się z programami lojalnościowymi przewoźników kolejowych.
+
+\subsection*{Loty}
+Moduł lotniczy ma oferować zaawansowane wyszukiwanie połączeń z możliwością filtrowania według ceny, czasu trwania czy liczby przesiadek.
+Użytkownicy powinni móc porównywać ceny lotów z różnych linii lotniczych i platform sprzedażowych oraz otrzymywać alerty o specjalnych ofertach i promocjach na wybrane kierunki.
+Aplikacja ma dążyć do umożliwienia odprawy online bezpośrednio z jej poziomu, dostarczania informacji o mapach lotnisk, bramkach, opóźnieniach i udogodnieniach, a także pozwolić na rezerwację transportu z i na lotnisko.
+
+\newpage
+\section{Analiza wymagań funkcjonalnych}
+Niniejszy rozdział poświęcony jest szczegółowej analizie wymagań funkcjonalnych systemu OpenTravel. Celem tej analizy jest precyzyjne zdefiniowanie, jakie działania system będzie realizował oraz jakie funkcje udostępni swoim użytkownikom i systemom zewnętrznym. Zakres analizy obejmuje identyfikację wszystkich kluczowych interakcji użytkownika z systemem oraz interakcji między komponentami systemu a stowarzyszonymi usługami.
+
+\subsection{Aktorzy Systemu OpenTravel}
+W ramach systemu OpenTravel zidentyfikowano kluczowe role, zwane aktorami, które będą wchodzić w interakcję z platformą. Aktorzy reprezentują zarówno użytkowników końcowych, jak i zewnętrzne systemy lub podmioty współpracujące. Poniżej przedstawiono ich listę wraz z krótkim opisem.
+
+\begin{description}
+    \item[\textbf{Użytkownik}] Główny aktor systemu, reprezentujący osobę fizyczną korzystającą z aplikacji do planowania podróży, wyszukiwania połączeń, zakupu biletów oraz zarządzania rezerwacjami. Obejmuje zróżnicowane profile, takie jak podróżny indywidualny, turysta, student, senior czy pracownik korporacyjny.
+    \item[\textbf{Użytkownik z niepełnosprawnością}] Podtyp \textit{Użytkownika}, który dodatkowo korzysta ze specyficznych funkcji systemu ułatwiających podróżowanie, np. filtrowania pod kątem dostępności infrastruktury lub rezerwacji usług transportowych dostosowanych do jego potrzeb.
+    \item[\textbf{Kierowca}] Aktor wykonujący usługi przewozowe; interakcja z systemem OpenTravel obejmuje przyjmowanie zleceń, zarządzanie statusami kursów oraz rozliczenia za pośrednictwem platformy.
+    \item[\textbf{Administrator systemu}] Osoba lub zespół odpowiedzialny za zarządzanie operacyjne i techniczne platformą OpenTravel, w tym konfigurację, monitorowanie, zarządzanie użytkownikami, treścią oraz integracjami z systemami zewnętrznymi.
+    \item[\textbf{Przewoźnik Miejski}] Zewnętrzny podmiot (np. Zarząd Transportu Miejskiego, Miejskie Przedsiębiorstwo Komunikacyjne) lub jego system informatyczny, odpowiedzialny za dostarczanie do OpenTravel danych dotyczących transportu publicznego (rozkłady jazdy, trasy, taryfy biletowe, dane czasu rzeczywistego) oraz umożliwiający zakup i obsługę biletów na komunikację miejską poprzez integrację z platformą.
+    \item[\textbf{Przewoźnik Prywatny (dla przejazdów typu taxi/na żądanie)}] Zewnętrzny podmiot świadczący usługi transportowe typu taxi lub inne przejazdy na żądanie. Aktor ten udostępnia dane o swoich trasach, taryfach i dostępności pojazdów, integrując je z platformą OpenTravel.
+    \item[\textbf{Przewoźnik Kolejowy}] Zewnętrzny podmiot lub system dostarczający dane o połączeniach kolejowych (rozkłady, ceny, dostępność, status pociągów) i odbierający informacje o sprzedanych biletach/rezerwacjach za pośrednictwem OpenTravel.
+    \item[\textbf{Przewoźnik Lotniczy}] Zewnętrzny podmiot lub system (linia lotnicza, system rezerwacyjny, agregator) udostępniający dane o lotach (rozkłady, ceny, dostępność, status) i umożliwiający procesy rezerwacji, zakupu oraz potencjalnie odprawy online poprzez platformę OpenTravel.
+    \item[\textbf{Dostawca Usług Płatności}] Zewnętrzny system (np. bramka płatnicza) integrowany z OpenTravel, odpowiedzialny za bezpieczne przetwarzanie i autoryzację transakcji finansowych dokonywanych przez Użytkowników.
+\end{description}
+
+\subsection{Lista Przypadków Użycia}
+Poniższa lista przedstawia zidentyfikowane przypadki użycia dla systemu OpenTravel, pogrupowane według głównych obszarów funkcjonalnych. Każdy przypadek użycia reprezentuje konkretną interakcję aktora z systemem, mającą osiągnąć określony cel. Diagramy przypadków użycia wizualizują te interakcje oraz powiązania między aktorami a przypadkami użycia w poszczególnych modułach systemu.
+
+\subsubsection{Zarządzanie Kontem i Funkcje Ogólne}
+\begin{enumerate}[label=\arabic*.]
+    \item Rejestracja w systemie (Nowy Użytkownik, Nowy Kierowca)
+    \item Logowanie do systemu (Użytkownik, Administrator systemu, Kierowca)
+    \item Zarządzanie danymi konta (Użytkownik, Administrator systemu, Kierowca)
+    \item Odzyskiwanie hasła (Użytkownik, Administrator systemu, Kierowca)
+    \item Zarządzanie metodami płatności (Użytkownik)
+    \item Dodawanie zniżek do konta (Użytkownik)
+    \item Zarządzanie danymi do faktury (Użytkownik)
+    \item Przeglądanie historii podróży (Użytkownik)
+    \item Przeglądanie historii kursów (Kierowca)
+    \item Przeglądanie historii zakupionych biletów (Użytkownik)
+    \item Konfiguracja preferencji powiadomień (Użytkownik)
+    \item Wyświetlanie aktywnego biletu do kontroli (Użytkownik)
+    \item Uzyskiwanie pomocy (Użytkownik, Kierowca)
+    \item Zarządzanie kontami użytkowników (Administrator systemu)
+    \item Monitorowanie stanu systemu i logów (Administrator systemu)
+    \item Generowanie raportów systemowych (Administrator systemu)
+    \item Wybór preferowanych środków transportu (Użytkownik)
+    \item Definiowanie preferencji dostępności (Użytkownik z niepełnosprawnością, Użytkownik)
+    \item Podgląd zarobków (Kierowca)
+    \item Dodawanie biletów/rezerwacji do kalendarza (Użytkownik)
+\end{enumerate}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{diagramy/przypadki_uzycia/images/diagram_zarzadzanie_kontem_1.png}
+    \caption{Diagram przypadków użycia: Funkcje ogólne - część 1}
+    \label{fig:diag_zk_1}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{diagramy/przypadki_uzycia/images/diagram_zarzadzanie_kontem_2.png}
+    \caption{Diagram przypadków użycia: Funkcje ogólne - część 2}
+    \label{fig:diag_zk_2}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{diagramy/przypadki_uzycia/images/diagram_zarzadzanie_kontem_3.png}
+    \caption{Diagram przypadków użycia: Funkcje ogólne - część 3}
+    \label{fig:diag_zk_3}
+\end{figure}
+
+\subsubsection{Transport Publiczny}
+\begin{enumerate}[label=\arabic*.]
+    \item Wyszukiwanie połączeń komunikacji miejskiej (Użytkownik)
+    \item Wyświetlanie rozkładu jazdy komunikacji miejskiej (Użytkownik)
+    \item Zakup biletu jednorazowego na komunikację miejską (Użytkownik, Przewoźnik Miejski, Dostawca Usług Płatności)
+    \item Zakup biletu okresowego na komunikację miejską (Użytkownik, Przewoźnik Miejski, Dostawca Usług Płatności)
+    \item Planowanie trasy multimodalnej (Użytkownik)
+    \item Zapisywanie ulubionych tras i przystanków (Użytkownik)
+    \item Otrzymywanie powiadomień o zmianach w komunikacji miejskiej (Użytkownik)
+    \item Dostarczanie danych o transporcie publicznym (Przewoźnik Miejski)
+\end{enumerate}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{diagramy/przypadki_uzycia/images/diagram_transport_publiczny.png}
+    \caption{Diagram przypadków użycia: Transport publiczny}
+    \label{fig:diag_tp}
+\end{figure}
+
+\subsubsection{Przejazdy Taksówką / Na Żądanie}
+\begin{enumerate}[label=\arabic*.]
+    \item Zamawianie przejazdu (Użytkownik, Przewoźnik Prywatny, Dostawca Usług Płatności)
+    \item Rezerwacja przyszłego przejazdu (Użytkownik, Kierowca, Przewoźnik Prywatny, Dostawca Usług Płatności)
+    \item Śledzenie lokalizacji zamówionego pojazdu (Użytkownik, Kierowca)
+    \item Anulowanie zamówionego przejazdu (Użytkownik, Kierowca, Przewoźnik Prywatny, Dostawca Usług Płatności)
+    \item Ocena kierowcy i przejazdu (Użytkownik)
+    \item Otrzymywanie powiadomienia o przyjeździe pojazdu (Użytkownik)
+    \item Akceptacja lub odrzucenie zlecenia (Kierowca, Przewoźnik Prywatny)
+    \item Nawigowanie do miejsca odbioru pasażera (Kierowca)
+    \item Zgłaszanie rozpoczęcia kursu (Kierowca)
+    \item Zgłaszanie zakończenia kursu (Kierowca, Dostawca Usług Płatności)
+    \item Zgłaszanie gotowości do przyjmowania zleceń (Kierowca)
+\end{enumerate}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{diagramy/przypadki_uzycia/images/diagram_przejazdy_taksowka_1.png}
+    \caption{Diagram przypadków użycia: Przejazdy taksówką / na żądanie - część 1}
+    \label{fig:diag_pt_1}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{diagramy/przypadki_uzycia/images/diagram_przejazdy_taksowka_2.png}
+    \caption{Diagram przypadków użycia: Przejazdy taksówką / na żądanie - część 2}
+    \label{fig:diag_pt_2}
+\end{figure}
+
+\subsubsection{Bilety Kolejowe}
+\begin{enumerate}[label=\arabic*.]
+    \item Wyszukiwanie połączeń kolejowych (Użytkownik)
+    \item Wyświetlanie szczegółów połączenia kolejowego (Użytkownik)
+    \item Wybór miejsca w pociągu (Użytkownik)
+    \item Dodawanie danych pasażera (Użytkownik)
+    \item Zakup biletu kolejowego (Użytkownik, Przewoźnik Kolejowy, Dostawca Usług Płatności)
+    \item Otrzymywanie powiadomień o zmianach dotyczących podróży koleją (Użytkownik)
+    \item Anulowanie biletu kolejowego (Użytkownik, Przewoźnik Kolejowy, Dostawca Usług Płatności)
+    \item Wymiana biletu kolejowego (Użytkownik, Przewoźnik Kolejowy, Dostawca Usług Płatności)
+    \item Pobieranie faktury za bilet kolejowy (Użytkownik)
+\end{enumerate}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{diagramy/przypadki_uzycia/images/diagram_bilety_kolejowe_1.png}
+    \caption{Diagram przypadków użycia: Bilety kolejowe}
+    \label{fig:diag_bk_1}
+\end{figure}
+
+\subsubsection{Bilety Lotnicze}
+\begin{enumerate}[label=\arabic*.]
+    \item Ustawianie preferencji wyszukiwania lotów (Użytkownik)
+    \item Zakup/Rezerwacja biletu lotniczego (Użytkownik, Przewoźnik lotniczy, Dostawca Usług Płatności)
+    \item Wyszukiwanie połączeń lotniczych (Użytkownik)
+    \item Wyświetlanie szczegółów połączenia lotniczego (Użytkownik)
+    \item Porównywanie cen biletów lotniczych (Użytkownik)
+    \item Dostarczanie danych o połączeniach i cenach biletów lotniczych (Przewoźnik Lotniczy)
+    \item Rezerwacja transportu na/z lotniska (Użytkownik, Kierowca, Przewoźnik Prywatny, Dostawca Usług Płatności)
+    \item Zarządzanie kartą pokładową (Użytkownik)
+    \item Sprawdzanie statusu lotu (Użytkownik)
+    \item Otrzymywanie alertów cenowych na loty (Użytkownik)
+    \item Wyświetlanie mapy lotniska (Użytkownik)
+\end{enumerate}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{diagramy/przypadki_uzycia/images/diagram_bilety_lotnicze_1.png}
+    \caption{Diagram przypadków użycia: Bilety lotnicze}
+    \label{fig:diag_bl_1}
+\end{figure}
+
+\newpage
+\section{Scenariusze Przypadków Użycia}
+\label{sec:scenarios}
+Niniejszy rozdział zawiera szczegółowe scenariusze dla wybranych przypadków użycia zidentyfikowanych w systemie OpenTravel. Każdy scenariusz opisuje krok po kroku interakcję aktorów z systemem, warunki początkowe i końcowe, główny ciąg zdarzeń oraz możliwe alternatywne przebiegi i sytuacje wyjątkowe. Celem jest precyzyjne zdefiniowanie zachowania systemu w odpowiedzi na działania użytkowników i systemów zewnętrznych.
+
+\subsection{Scenariusze dla modułu: Zarządzanie Kontem i Funkcje Ogólne}
+W tej sekcji przedstawiono scenariusze przypadków użycia związane z podstawowymi funkcjami zarządzania kontem użytkownika, kierowcy oraz administratora, a także innymi ogólnymi operacjami dostępnymi w systemie OpenTravel. Obejmują one procesy takie jak rejestracja, logowanie, zarządzanie danymi osobowymi oraz inne funkcje wspólne dla różnych typów użytkowników.
+
+\subsubsection{PU-ZK-01: Rejestracja w systemie}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Rejestracja w systemie
+    \item \textbf{Opis przypadku użycia:} Umożliwia nowym użytkownikom oraz kierowcom utworzenie konta w systemie OpenTravel poprzez podanie niezbędnych danych i ich weryfikację.
+    \item \textbf{Aktorzy biorący udział:} Nowy Użytkownik, Nowy Kierowca
+    \item \textbf{Uzasadnienie:} Zapewnienie nowym osobom możliwości dołączenia do platformy OpenTravel i korzystania z jej funkcjonalności.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Aktor (Nowy Użytkownik lub Nowy Kierowca) posiada dostęp do aplikacji mobilnej OpenTravel lub strony internetowej.
+            \item Aktor nie jest zalogowany w systemie.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item Nowe konto Aktora zostało pomyślnie utworzone i zweryfikowane (jeśli wymagane).
+            \item Dane nowego konta zostały zapisane w bazie danych systemu.
+            \item Aktor jest gotowy do pierwszego logowania lub został automatycznie zalogowany.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item Aktor uruchamia aplikację mobilną OpenTravel lub otwiera stronę internetową.
+            \item Aktor wybiera opcję "Zarejestruj się".
+            \item System wyświetla formularz rejestracyjny.
+            \item Aktor wybiera typ konta (Użytkownik lub Kierowca – jeśli rozróżnienie jest na tym etapie).
+            \item Aktor wypełnia wymagane pola formularza (np. adres e-mail, hasło, imię, nazwisko, numer telefonu). Konkretne pola mogą zależeć od typu konta.
+            \item Aktor akceptuje regulamin systemu i politykę prywatności.
+            \item Aktor wybiera przycisk potwierdzający chęć rejestracji (np. "Zarejestruj", "Utwórz konto").
+            \item System przeprowadza walidację wprowadzonych danych (np. format adresu e-mail, siła hasła, kompletność danych).
+            \item System wysyła wiadomość e-mail z linkiem aktywacyjnym na podany adres e-mail lub kod weryfikacyjny SMS na podany numer telefonu (w zależności od skonfigurowanej metody weryfikacji).
+            \item Aktor odbiera wiadomość i klika w link aktywacyjny lub wprowadza otrzymany kod weryfikacyjny w odpowiednim polu w aplikacji/na stronie.
+            \item System weryfikuje poprawność linku/kodu.
+            \item System tworzy nowe konto w bazie danych, przypisując mu unikalny identyfikator oraz wybrany typ (Użytkownik/Kierowca).
+            \item System oznacza konto jako aktywne/zweryfikowane.
+            \item System wyświetla komunikat o pomyślnym zakończeniu rejestracji i może automatycznie zalogować Aktora lub przekierować go do ekranu logowania.
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Rejestracja za pomocą konta zewnętrznego (np. Google, Facebook, Apple ID)}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Zamiast/Po kroku 2 Głównego ciągu zdarzeń.} Aktor wybiera opcję rejestracji za pomocą jednego z dostępnych dostawców tożsamości (np. "Zarejestruj przez Google").
+                    \item System inicjuje proces autoryzacji z wybranym dostawcą zewnętrznym (np. przekierowuje Aktora na stronę logowania dostawcy lub wyświetla systemowe okno dialogowe logowania).
+                    \item Aktor loguje się na swoje konto u dostawcy zewnętrznego i udziela zgody na udostępnienie przez dostawcę określonych danych (np. adresu e-mail, imienia, nazwiska) systemowi OpenTravel.
+                    \item System OpenTravel otrzymuje dane autoryzacyjne oraz profilowe od dostawcy zewnętrznego.
+                    \item System tworzy nowe konto w bazie danych, wykorzystując otrzymane dane. Konto jest domyślnie oznaczane jako zweryfikowane.
+                    \item System może poprosić Aktora o uzupełnienie dodatkowych informacji specyficznych dla OpenTravel, jeśli nie zostały one dostarczone przez zewnętrznego dostawcę (np. wybór typu konta Kierowca/Użytkownik, jeśli nie jest to domyślne).
+                    \item System wyświetla komunikat o pomyślnym zakończeniu rejestracji i zazwyczaj automatycznie loguje Aktora. (Kontynuacja od kroku 14 Głównego ciągu zdarzeń).
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Nieprawidłowe dane w formularzu.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 8 Głównego ciągu zdarzeń.} System wykrywa błędy walidacji (np. niepoprawny format adresu e-mail, hasło nie spełnia wymagań bezpieczeństwa, brak wypełnienia obowiązkowych pól).
+                    \item System wyświetla stosowne komunikaty o błędach przy odpowiednich polach formularza.
+                    \item Aktor ma możliwość poprawienia danych. Scenariusz wraca do kroku 5 Głównego ciągu zdarzeń.
+                \end{enumerate}
+            \item \textbf{W2: Konto z podanym adresem e-mail lub numerem telefonu już istnieje.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 8 Głównego ciągu zdarzeń.} System stwierdza, że podany unikalny identyfikator (np. adres e-mail) jest już zarejestrowany.
+                    \item System wyświetla komunikat informujący, że konto już istnieje i sugeruje logowanie lub skorzystanie z opcji odzyskiwania hasła.
+                    \item Proces rejestracji dla tych danych kończy się niepowodzeniem.
+                \end{enumerate}
+            \item \textbf{W3: Nieudana wysyłka wiadomości weryfikacyjnej.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 9 Głównego ciągu zdarzeń.} System napotyka problem techniczny uniemożliwiający wysłanie wiadomości e-mail lub SMS.
+                    \item System wyświetla komunikat o błędzie i może zaoferować opcję ponownego wysłania wiadomości lub kontakt z pomocą techniczną.
+                \end{enumerate}
+            \item \textbf{W4: Link aktywacyjny/kod weryfikacyjny jest nieprawidłowy lub wygasł.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 11 Głównego ciągu zdarzeń.} System stwierdza, że użyty link aktywacyjny lub kod weryfikacyjny jest niepoprawny, został już użyty lub jego ważność wygasła.
+                    \item System wyświetla komunikat o błędzie weryfikacji i może zaoferować opcję ponownego wysłania wiadomości weryfikacyjnej.
+                \end{enumerate}
+            \item \textbf{W5: Błąd autoryzacji przez dostawcę zewnętrznego (dotyczy A1).}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Podczas kroku 3 Alternatywnego ciągu zdarzeń A1.} Dostawca zewnętrzny zwraca błąd autoryzacji lub Aktor nie udziela zgody.
+                    \item System OpenTravel wyświetla komunikat o niepowodzeniu autoryzacji i sugeruje ponowienie próby lub wybór innej metody rejestracji.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Scenariusze dla modułu: Bilety Lotnicze}
+Poniżej przedstawiono scenariusze dla przypadków użycia zidentyfikowanych w module biletów lotniczych. Każdy scenariusz opisuje interakcję aktora z systemem w celu osiągnięcia konkretnego rezultatu, począwszy od konfiguracji preferencji, przez wyszukiwanie i zakup biletów, aż po zarządzanie rezerwacją i uzyskiwanie informacji lotniskowych.
+
+\subsubsection{PU-BL-01: Ustawianie preferencji wyszukiwania lotów}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Ustawianie preferencji wyszukiwania lotów
+    \item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi zdefiniowanie domyślnych kryteriów i preferencji dotyczących wyszukiwania połączeń lotniczych, takich jak preferowana klasa podróży, maksymalna liczba przesiadek, preferowane linie lotnicze czy lotniska.
+    \item \textbf{Aktorzy biorący udział:} Użytkownik
+    \item \textbf{Uzasadnienie:} Personalizacja wyników wyszukiwania i przyspieszenie procesu znajdowania odpowiednich lotów poprzez zapamiętanie często używanych kryteriów.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Użytkownik jest zalogowany do systemu.
+            \item Użytkownik znajduje się w sekcji ustawień konta lub w module wyszukiwania lotów, gdzie dostępna jest opcja konfiguracji preferencji.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item Preferencje wyszukiwania lotów użytkownika są zapisane w systemie.
+            \item System będzie domyślnie stosował zapisane preferencje przy kolejnych wyszukiwaniach lotów przez tego użytkownika.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item Użytkownik wybiera opcję modyfikacji/ustawiania preferencji wyszukiwania lotów.
+            \item System wyświetla formularz z dostępnymi opcjami preferencji (np. preferowana klasa podróży: ekonomiczna, biznes, pierwsza; maksymalna liczba przesiadek: bezpośredni, 1 przesiadka, 2+ przesiadki; preferowane linie lotnicze: pole do wpisania lub wyboru z listy; preferowane lotniska wylotu/przylotu).
+            \item Użytkownik wprowadza lub modyfikuje swoje preferencje w formularzu.
+            \item Użytkownik zatwierdza zmiany (np. poprzez kliknięcie przycisku "Zapisz preferencje").
+            \item System zapisuje ustawione preferencje w profilu użytkownika powiązanym z jego kontem.
+            \item System wyświetla komunikat potwierdzający zapisanie preferencji.
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Użytkownik anuluje zmiany.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Przed krokiem 4 Głównego ciągu zdarzeń.} Użytkownik wybiera opcję anulowania zmian (np. przycisk "Anuluj").
+                    \item System odrzuca wprowadzone zmiany i nie modyfikuje wcześniej zapisanych preferencji (lub stanu domyślnego, jeśli nie było wcześniejszych preferencji).
+                    \item System powraca do poprzedniego widoku lub zamyka formularz preferencji.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Błąd zapisu preferencji.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 4 Głównego ciągu zdarzeń.} System napotyka problem podczas próby zapisania preferencji (np. błąd komunikacji z bazą danych, błąd serwera).
+                    \item System wyświetla komunikat o błędzie informujący użytkownika, że preferencje nie zostały zapisane.
+                    \item Użytkownik może mieć możliwość ponownej próby zapisu.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BL-02: Zakup/Rezerwacja biletu lotniczego}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Zakup/Rezerwacja biletu lotniczego
+    \item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi dokonanie zakupu lub rezerwacji wybranego biletu lotniczego po wyszukaniu i wybraniu odpowiedniego połączenia, włączając podanie danych pasażerów i dokonanie płatności.
+    \item \textbf{Aktorzy biorący udział:} Użytkownik, Przewoźnik Lotniczy (system zewnętrzny), Dostawca Usług Płatności (system zewnętrzny)
+    \item \textbf{Uzasadnienie:} Kluczowa funkcjonalność systemu pozwalająca na finalizację procesu planowania podróży lotniczej i nabycie prawa do przelotu.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Użytkownik jest zalogowany do systemu OpenTravel.
+            \item Użytkownik wyszukał połączenia lotnicze i wybrał konkretny lot do zakupu/rezerwacji.
+            \item System wyświetla szczegóły wybranego lotu wraz z aktualną ceną.
+            \item Użytkownik posiada zdefiniowaną przynajmniej jedną metodę płatności w systemie lub jest gotowy ją dodać podczas procesu.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item Bilet lotniczy został pomyślnie zakupiony (lub zarezerwowany, jeśli system wspiera taką opcję).
+            \item Użytkownik otrzymał potwierdzenie zakupu/rezerwacji (np. wiadomość e-mail, powiadomienie w aplikacji, wyświetlenie potwierdzenia na ekranie).
+            \item Zakupiony bilet/rezerwacja jest widoczna w historii podróży użytkownika w systemie OpenTravel.
+            \item Środki finansowe za bilet zostały pobrane z konta użytkownika (w przypadku natychmiastowego zakupu).
+            \item Odpowiednie dane rezerwacyjne zostały przesłane i potwierdzone przez system Przewoźnika Lotniczego.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item Użytkownik, po zapoznaniu się ze szczegółami wybranego lotu, wybiera opcję "Kup bilet" lub "Zarezerwuj" (jeśli dotyczy).
+            \item System wyświetla formularz do wprowadzenia danych pasażera(ów) (np. imię, nazwisko, data urodzenia, obywatelstwo, numer dokumentu tożsamości, dane kontaktowe). Część danych może być automatycznie uzupełniona na podstawie profilu zalogowanego użytkownika.
+            \item Użytkownik wprowadza lub weryfikuje i potwierdza dane wszystkich pasażerów.
+            \item System może zaoferować opcjonalne usługi dodatkowe (np. wybór miejsca w samolocie, dodatkowy bagaż, ubezpieczenie podróżne), jeśli są dostępne poprzez integrację z systemem Przewoźnika Lotniczego.
+            \item Użytkownik dokonuje wyboru usług dodatkowych lub pomija ten krok.
+            \item System przedstawia finalne podsumowanie zamówienia, zawierające wszystkie wybrane loty, usługi dodatkowe oraz łączną kwotę do zapłaty.
+            \item Użytkownik wybiera preferowaną metodę płatności spośród dostępnych (lub dodaje nową).
+            \item Użytkownik potwierdza chęć dokonania zakupu/rezerwacji i autoryzuje płatność.
+            \item System OpenTravel inicjuje transakcję płatniczą, przekazując niezbędne dane do systemu Dostawcy Usług Płatności w bezpieczny sposób.
+            \item Dostawca Usług Płatności przetwarza płatność (np. poprzez autoryzację karty kredytowej, przekierowanie do strony banku).
+            \item System OpenTravel otrzymuje potwierdzenie pomyślnego przetworzenia płatności od Dostawcy Usług Płatności.
+            \item System OpenTravel wysyła żądanie rezerwacji/zakupu biletu wraz z danymi pasażerów i potwierdzeniem płatności do systemu Przewoźnika Lotniczego.
+            \item System Przewoźnika Lotniczego przetwarza żądanie, potwierdza rezerwację/zakup i odsyła dane potwierdzające (np. numer rezerwacji, numer(y) elektronicznego(ych) biletu(ów)).
+            \item System OpenTravel zapisuje dane biletu/rezerwacji w profilu użytkownika oraz w swojej bazie danych.
+            \item System wyświetla użytkownikowi na ekranie potwierdzenie zakupu/rezerwacji wraz z kluczowymi informacjami.
+            \item System wysyła automatyczne potwierdzenie (np. e-mail) zawierające szczegóły rezerwacji i bilet elektroniczny (jeśli dostępny od razu) na adres e-mail użytkownika i/lub generuje powiadomienie w aplikacji.
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Błąd walidacji danych pasażera.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 3 Głównego ciągu zdarzeń.} Użytkownik wprowadza niekompletne lub niepoprawne dane pasażera (np. błędny format daty urodzenia, brakujące pola).
+                    \item System wyświetla komunikat o błędzie walidacji, wskazując niepoprawne pola.
+                    \item Użytkownik ma możliwość poprawienia danych. Scenariusz wraca do kroku 2 Głównego ciągu zdarzeń.
+                \end{enumerate}
+            \item \textbf{A2: Niepowodzenie płatności.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 10 Głównego ciągu zdarzeń.} Dostawca Usług Płatności odrzuca transakcję (np. brak wystarczających środków na koncie, błędne dane karty, przekroczony limit transakcji, odrzucenie przez bank).
+                    \item System OpenTravel otrzymuje informację o niepowodzeniu płatności.
+                    \item System informuje użytkownika o problemie z płatnością i umożliwia wybór innej metody płatności, poprawę danych obecnej metody lub ponowienie próby. Scenariusz wraca do kroku 7 Głównego ciągu zdarzeń.
+                \end{enumerate}
+            \item \textbf{A3: Użytkownik anuluje proces zakupu/rezerwacji przed dokonaniem płatności.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Na dowolnym etapie przed krokiem 8 Głównego ciągu zdarzeń.} Użytkownik wybiera opcję anulowania procesu (np. przycisk "Anuluj", "Powrót").
+                    \item System przerywa bieżący proces zakupu/rezerwacji.
+                    \item System powraca do widoku szczegółów lotu lub wyników wyszukiwania, w zależności od etapu, na którym anulowano.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Błąd komunikacji z systemem Przewoźnika Lotniczego lub brak dostępności miejsc/zmiana ceny w ostatniej chwili.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 12 Głównego ciągu zdarzeń.} System Przewoźnika Lotniczego zwraca błąd (np. miejsca na wybrany lot zostały w międzyczasie wyprzedane, cena uległa zmianie, błąd techniczny po stronie przewoźnika).
+                    \item System OpenTravel informuje użytkownika o problemie z finalizacją rezerwacji/zakupu (np. "Wybrane miejsca są już niedostępne", "Cena lotu uległa zmianie").
+                    \item Jeśli płatność została już autoryzowana, system OpenTravel inicjuje proces anulowania autoryzacji lub zwrotu środków we współpracy z Dostawcą Usług Płatności.
+                    \item Użytkownik jest zachęcany do ponownego wyszukania lotu lub wyboru innego połączenia.
+                \end{enumerate}
+            \item \textbf{W2: Rezerwacja tymczasowa wygasa.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Podczas procesu, np. po kroku 6 Głównego ciągu zdarzeń.} Użytkownik zbyt długo zwleka z przejściem do kolejnych kroków, a system Przewoźnika Lotniczego (lub agregatora) ma określony limit czasowy na utrzymanie tymczasowej rezerwacji/ceny.
+                    \item System Przewoźnika Lotniczego (lub OpenTravel na podstawie informacji od przewoźnika) informuje o wygaśnięciu sesji rezerwacyjnej lub oferty cenowej.
+                    \item System OpenTravel informuje użytkownika o konieczności rozpoczęcia procesu od nowa (od wyszukania lotów).
+                \end{enumerate}
+            \item \textbf{W3: Błąd techniczny systemu OpenTravel lub Dostawcy Usług Płatności.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Na dowolnym etapie.} Występuje nieoczekiwany błąd wewnętrzny w systemie OpenTravel lub w systemie Dostawcy Usług Płatności.
+                    \item System wyświetla ogólny komunikat o błędzie technicznym i sugeruje ponowienie próby później lub kontakt z obsługą klienta.
+                    \item Transakcja nie dochodzi do skutku lub, jeśli błąd wystąpił po płatności, system podejmuje działania w celu wyjaśnienia statusu transakcji i ewentualnego zwrotu środków.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BL-03: Wyszukiwanie połączeń lotniczych}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Wyszukiwanie połączeń lotniczych
+    \item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi wyszukiwanie dostępnych połączeń lotniczych na podstawie określonych kryteriów, takich jak lotnisko wylotu i przylotu, daty podróży, liczba pasażerów oraz inne preferencje.
+    \item \textbf{Aktorzy biorący udział:} Użytkownik, Przewoźnik Lotniczy (system zewnętrzny/agregator - jako źródło danych)
+    \item \textbf{Uzasadnienie:} Podstawowa funkcja modułu lotniczego, inicjująca proces planowania podróży lotniczej poprzez prezentację dostępnych opcji przelotu.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Użytkownik znajduje się w sekcji wyszukiwania lotów aplikacji OpenTravel.
+            \item Opcjonalnie: Użytkownik jest zalogowany i może mieć zapisane domyślne preferencje wyszukiwania.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item System wyświetla listę dostępnych połączeń lotniczych spełniających kryteria wprowadzone przez użytkownika (lub komunikat o braku wyników).
+            \item Wyniki wyszukiwania zawierają kluczowe informacje o każdym połączeniu, takie jak: linie lotnicze, porty wylotu i przylotu, daty i godziny, czas trwania lotu, liczbę przesiadek, oraz orientacyjną cenę.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item Użytkownik wybiera opcję wyszukiwania lotów (np. poprzez dedykowany przycisk lub sekcję w menu).
+            \item System wyświetla formularz wyszukiwania zawierający co najmniej następujące pola:
+                \begin{itemize}
+                    \item Lotnisko/miasto wylotu (pole tekstowe z funkcją autouzupełniania, wybór z listy lub mapy).
+                    \item Lotnisko/miasto przylotu (analogicznie jak wyżej).
+                    \item Data wylotu (wybór z interaktywnego kalendarza).
+                    \item Data powrotu (opcjonalnie, dla lotów w obie strony; wybór z kalendarza).
+                    \item Typ podróży (np. w jedną stronę, w obie strony, wiele miast).
+                    \item Liczba pasażerów (z podziałem na kategorie: dorośli, dzieci, niemowlęta).
+                    \item Klasa podróży (np. ekonomiczna, premium ekonomiczna, biznes, pierwsza – pole może być wstępnie wypełnione na podstawie preferencji użytkownika, jeśli jest zalogowany i ma je zdefiniowane).
+                \end{itemize}
+            \item Użytkownik wypełnia obowiązkowe pola formularza wyszukiwania.
+            \item Użytkownik (opcjonalnie) rozwija i modyfikuje filtry zaawansowane (np. preferowane linie lotnicze, loty bezpośrednie, maksymalna liczba przesiadek, preferowany czas wylotu/przylotu). Filtry te mogą być częściowo wypełnione na podstawie zapisanych preferencji użytkownika (patrz PU-BL-01).
+            \item Użytkownik inicjuje wyszukiwanie (np. poprzez naciśnięcie przycisku "Szukaj lotów").
+            \item System OpenTravel wysyła sformułowane zapytanie (na podstawie wprowadzonych kryteriów) do zintegrowanych systemów zewnętrznych Przewoźników Lotniczych i/lub agregatorów ofert lotniczych.
+            \item System OpenTravel odbiera odpowiedzi od systemów zewnętrznych zawierające listę dostępnych połączeń i ich szczegóły.
+            \item System przetwarza, agreguje i filtruje otrzymane wyniki. Wyniki są zazwyczaj sortowane według domyślnego kryterium (np. najniższa cena, najkrótszy czas podróży, rekomendacja systemu).
+            \item System wyświetla użytkownikowi listę znalezionych połączeń lotniczych. Każda pozycja na liście prezentuje skrócone, kluczowe informacje (np. logo linii lotniczej, trasa, podstawowe czasy, liczba przesiadek, cena).
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Użycie zapisanych preferencji wyszukiwania.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Krok 2 Głównego ciągu zdarzeń.} Jeśli użytkownik jest zalogowany i ma zdefiniowane preferencje wyszukiwania (PU-BL-01), system automatycznie wypełnia odpowiednie pola formularza wyszukiwania (np. klasa podróży, preferowane linie).
+                    \item Użytkownik może zaakceptować te preferencje lub zmodyfikować je dla bieżącego wyszukiwania. Scenariusz kontynuuje od kroku 3 Głównego ciągu zdarzeń.
+                \end{enumerate}
+            \item \textbf{A2: Modyfikacja filtrów po wyświetleniu wyników.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 9 Głównego ciągu zdarzeń.} Użytkownik, po przejrzeniu wstępnej listy wyników, decyduje się na zastosowanie lub modyfikację filtrów (np. zawężenie zakresu cenowego, wybór konkretnej linii lotniczej, zmiana liczby przesiadek).
+                    \item System aktualizuje wyświetlaną listę wyników zgodnie z nowymi kryteriami filtrowania, bez konieczności ponownego odpytywania systemów zewnętrznych (jeśli dane zostały już pobrane) lub odpytuje ponownie z nowymi filtrami.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Błąd walidacji danych wejściowych formularza.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 3 lub 4 Głównego ciągu zdarzeń.} Użytkownik wprowadza niekompletne lub niepoprawne dane w formularzu (np. data wylotu z przeszłości, identyczne lotnisko wylotu i przylotu dla podróży w jedną stronę, niepoprawny format danych).
+                    \item System wyświetla komunikat o błędzie walidacji, dokładnie wskazując niepoprawne pola i rodzaj błędu.
+                    \item Użytkownik ma możliwość poprawienia wprowadzonych danych. Scenariusz wraca do kroku odpowiedniego do poprawy danych.
+                \end{enumerate}
+            \item \textbf{W2: Brak wyników wyszukiwania (żadne połączenie nie spełnia kryteriów).}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 8 Głównego ciągu zdarzeń.} Systemy zewnętrzne nie zwracają żadnych połączeń lotniczych, które spełniałyby wszystkie kryteria zdefiniowane przez użytkownika.
+                    \item System wyświetla stosowny komunikat informujący o braku dostępnych lotów dla podanych parametrów.
+                    \item System może dodatkowo zasugerować użytkownikowi modyfikację kryteriów wyszukiwania (np. rozszerzenie zakresu dat, wybór pobliskich lotnisk, usunięcie niektórych filtrów).
+                \end{enumerate}
+            \item \textbf{W3: Błąd komunikacji z systemami zewnętrznymi (Przewoźników/agregatorów).}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Podczas kroku 7 lub 8 Głównego ciągu zdarzeń.} System OpenTravel napotyka problem podczas komunikacji z jednym lub wieloma systemami zewnętrznymi (np. timeout żądania, błąd serwera po stronie dostawcy danych, brak odpowiedzi).
+                    \item System wyświetla komunikat o błędzie informujący, że wyniki mogą być niekompletne lub wyszukiwanie nie powiodło się.
+                    \item System może zaproponować ponowienie próby wyszukiwania lub wyświetlić częściowe wyniki (jeśli są dostępne od innych dostawców).
+                \end{enumerate}
+            \item \textbf{W4: Zbyt wiele wyników (przekroczony limit).}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 8 Głównego ciągu zdarzeń.} Zapytanie użytkownika jest bardzo ogólne i generuje liczbę wyników przekraczającą techniczne możliwości wyświetlenia lub przetwarzania przez system.
+                    \item System może wyświetlić komunikat proszący o zawężenie kryteriów wyszukiwania.
+                    \item Alternatywnie, system może wyświetlić tylko część wyników (np. pierwszych N) z informacją o konieczności uściślenia zapytania.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BL-04: Wyświetlanie szczegółów połączenia lotniczego}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Wyświetlanie szczegółów połączenia lotniczego
+    \item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi wyświetlenie pełnych, szczegółowych informacji o wybranym połączeniu lotniczym z listy wyników wyszukiwania.
+    \item \textbf{Aktorzy biorący udział:} Użytkownik, Przewoźnik Lotniczy (system zewnętrzny/agregator - jako źródło danych)
+    \item \textbf{Uzasadnienie:} Dostarczenie użytkownikowi wszystkich niezbędnych informacji do podjęcia świadomej decyzji o wyborze i ewentualnym zakupie konkretnego lotu.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Użytkownik przeprowadził wyszukiwanie połączeń lotniczych (zakończony PU-BL-03).
+            \item System wyświetla listę wyników wyszukiwania.
+            \item Użytkownik wybiera jedno konkretne połączenie z listy w celu obejrzenia jego szczegółów.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item System wyświetla dedykowaną stronę lub sekcję ze szczegółowymi informacjami o wybranym połączeniu lotniczym.
+            \item Użytkownik ma dostęp do wszystkich istotnych danych dotyczących lotu, w tym opcji przejścia do procesu zakupu/rezerwacji.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item Użytkownik wybiera (np. klika) konkretne połączenie lotnicze z wyświetlonej listy wyników wyszukiwania.
+            \item System OpenTravel wysyła zapytanie o pełne szczegóły wybranego lotu do odpowiedniego systemu Przewoźnika Lotniczego lub agregatora (jeśli dane nie zostały pobrane w całości podczas wyszukiwania lub wymagają dynamicznej aktualizacji, np. dokładna cena, dostępność ostatnich miejsc, szczegółowe warunki taryfy).
+            \item System odbiera szczegółowe dane o locie od systemu zewnętrznego.
+            \item System wyświetla stronę/widok ze szczegółami połączenia, zawierającą co najmniej:
+                \begin{itemize}
+                    \item Pełną trasę lotu: lotnisko wylotu, lotnisko przylotu, ewentualne lotniska przesiadkowe.
+                    \item Nazwę linii lotniczej (lub linii operujących na poszczególnych odcinkach), numer(y) lotu(ów).
+                    \item Dokładne daty i godziny wylotu oraz przylotu dla każdego segmentu podróży (w czasach lokalnych, z uwzględnieniem stref czasowych).
+                    \item Całkowity czas podróży oraz czas trwania poszczególnych lotów i przesiadek.
+                    \item Informacje o terminalach wylotu/przylotu (jeśli dostępne).
+                    \item Typ samolotu (jeśli informacja jest udostępniana).
+                    \item Klasę podróży (np. ekonomiczna, biznes).
+                    \item Dokładną i aktualną cenę biletu dla wybranej liczby pasażerów, z wyszczególnieniem składowych (taryfa bazowa, podatki, opłaty lotniskowe, opłata za usługę, jeśli dotyczy).
+                    \item Informacje o limitach bagażu (rejestrowany i podręczny – waga, wymiary, liczba sztuk w cenie biletu oraz opcje dopłaty za nadbagaż).
+                    \item Kluczowe warunki taryfy (np. możliwość zmiany rezerwacji, zwrotu biletu, koszty związane z tymi operacjami).
+                    \item Opcjonalnie: dostępne usługi na pokładzie, opinie o linii lotniczej lub konkretnym połączeniu.
+                \end{itemize}
+            \item System wyświetla wyraźnie widoczną opcję (np. przycisk "Wybierz ten lot", "Przejdź do rezerwacji") umożliwiającą użytkownikowi kontynuowanie procesu w celu zakupu biletu (przejście do PU-BL-02).
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Wyświetlanie wielu ofert dla tego samego lotu od różnych dostawców.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 3 Głównego ciągu zdarzeń.} Jeśli system OpenTravel integruje się z wieloma agregatorami lub bezpośrednio z liniami, dla tego samego (lub bardzo podobnego) połączenia może istnieć kilka ofert cenowych od różnych sprzedawców.
+                    \item System, oprócz szczegółów lotu, prezentuje listę dostępnych ofert z różnych źródeł, wskazując cenę i dostawcę.
+                    \item Użytkownik wybiera jedną z ofert, aby zobaczyć jej pełne szczegóły lub przejść do rezerwacji u danego dostawcy poprzez OpenTravel.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Cena lub dostępność lotu uległa zmianie od czasu wyświetlenia na liście wyników.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Podczas kroku 3 Głównego ciągu zdarzeń.} Podczas pobierania aktualnych szczegółów, system Przewoźnika Lotniczego/agregatora informuje, że cena wybranego lotu uległa zmianie (wzrosła lub zmalała) lub że lot w pierwotnie wyświetlonej cenie/konfiguracji nie jest już dostępny (np. wyprzedane miejsca w danej taryfie).
+                    \item System OpenTravel natychmiast wyświetla zaktualizowane informacje użytkownikowi (nowa cena, informacja o braku dostępności).
+                    \item Jeśli lot jest całkowicie niedostępny, użytkownik jest o tym informowany i zachęcany do powrotu do listy wyników w celu wyboru innego połączenia.
+                    \item Jeśli cena się zmieniła, użytkownik widzi nową cenę i może podjąć decyzję o kontynuacji lub rezygnacji.
+                \end{enumerate}
+            \item \textbf{W2: Błąd pobierania szczegółów lotu z systemu zewnętrznego.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Podczas kroku 3 Głównego ciągu zdarzeń.} System OpenTravel napotyka błąd podczas komunikacji z systemem Przewoźnika Lotniczego/agregatora (np. timeout, błąd serwera dostawcy).
+                    \item System wyświetla komunikat o błędzie informujący, że szczegóły lotu nie mogły zostać w tym momencie załadowane.
+                    \item Użytkownik może mieć możliwość ponowienia próby załadowania szczegółów lub powrotu do listy wyników wyszukiwania.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BL-05: Porównywanie cen biletów lotniczych}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Porównywanie cen biletów lotniczych
+    \item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi porównanie cen tego samego lub podobnych połączeń lotniczych oferowanych przez różnych dostawców (linie lotnicze, agencje podróży online) lub w różnych terminach, aby ułatwić znalezienie najkorzystniejszej oferty.
+    \item \textbf{Aktorzy biorący udział:} Użytkownik, Przewoźnik Lotniczy (system zewnętrzny/agregator - jako źródło danych)
+    \item \textbf{Uzasadnienie:} Pomoc użytkownikowi w znalezieniu najkorzystniejszej oferty cenowej dla wybranej trasy, co jest jednym z kluczowych czynników przy podejmowaniu decyzji o zakupie biletu lotniczego.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Użytkownik przeprowadził wyszukiwanie połączeń lotniczych (zakończony PU-BL-03).
+            \item System wyświetla listę wyników wyszukiwania, która może zawierać oferty od różnych linii lotniczych i potencjalnie od różnych dystrybutorów.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item System prezentuje użytkownikowi informacje w sposób ułatwiający porównanie cen dla wybranych kryteriów (np. różne linie lotnicze dla tej samej trasy i dat, ceny dla tej samej trasy w różnych, bliskich datach, ceny od różnych agregatorów dla tego samego połączenia).
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń (Porównywanie w ramach wyników wyszukiwania):}
+        \begin{enumerate}
+            \item System, po przeprowadzeniu wyszukiwania (PU-BL-03), domyślnie wyświetla wyniki od różnych Przewoźników Lotniczych/agregatorów. Już sama lista wyników, jeśli jest posortowana np. po cenie, umożliwia podstawowe porównanie.
+            \item Użytkownik korzysta z dostępnych narzędzi sortowania (np. "Sortuj po cenie: od najniższej", "Sortuj po cenie: od najwyższej") aby uporządkować listę wyników według kryterium cenowego.
+            \item Użytkownik korzysta z narzędzi filtrowania (np. według linii lotniczej, liczby przesiadek, sojuszu lotniczego), aby zawęzić wyniki do tych, które go najbardziej interesują, co również ułatwia porównanie w ramach wybranej grupy.
+            \item \textit{Kontekst: Jeśli system integruje się z wieloma OTA - Online Travel Agencies lub dystrybutorami.} Dla konkretnego połączenia lotniczego (tej samej trasy, dat i numerów lotów), system może wyświetlać kilka ofert cenowych od różnych sprzedawców. Użytkownik widzi te różnice i może wybrać najkorzystniejszą dla siebie ofertę, aby przejść do jej szczegółów (PU-BL-04).
+        \end{enumerate}
+    \item \textbf{Główny ciąg zdarzeń (Porównywanie z wykorzystaniem dedykowanej funkcji, np. kalendarz cenowy / wykres cen):}
+        \begin{enumerate}
+            \item Użytkownik inicjuje wyszukiwanie dla określonej trasy (wylot, przylot), ale wybiera opcję elastycznych dat lub przeglądania cen w całym miesiącu/okresie (jeśli taka funkcja jest dostępna).
+            \item System wysyła odpowiednio sformułowane zapytania do systemów Przewoźników Lotniczych/agregatorów w celu pobrania informacji o najniższych dostępnych cenach dla danej trasy w szerszym zakresie dat.
+            \item System odbiera dane o cenach w różnych terminach.
+            \item System prezentuje wyniki w formie interaktywnego kalendarza cenowego (gdzie dla każdego dnia wyświetlana jest najniższa znaleziona cena) lub wykresu trendu cenowego.
+            \item Użytkownik analizuje prezentację cen i wybiera interesującą go datę (lub zakres dat) z najkorzystniejszą, jego zdaniem, ceną.
+            \item Po wybraniu konkretnej daty (lub dat), system wyświetla listę konkretnych lotów dostępnych w tej cenie (lub zbliżonej) dla wybranego terminu. Scenariusz może następnie przejść do wyświetlania listy wyników (jak w PU-BL-03, krok 9) lub bezpośrednio do szczegółów lotu (PU-BL-04), jeśli wybór był jednoznaczny.
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Brak wystarczających danych do porównania dla elastycznych dat.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Podczas kroku 3 Głównego ciągu zdarzeń dla kalendarza cen.} Systemy zewnętrzne nie dostarczają wystarczających danych historycznych lub prognozowanych do stworzenia wiarygodnego kalendarza cenowego lub wykresu trendu dla wybranej trasy.
+                    \item System informuje użytkownika o braku możliwości wyświetlenia porównania dla elastycznych dat i sugeruje wyszukiwanie dla konkretnych, wybranych przez użytkownika dat.
+                \end{enumerate}
+            \item \textbf{A2: Użytkownik ustawia alert cenowy (przejście do PU-BL-10).}
+                \begin{enumerate}
+                    \item Po przejrzeniu cen, użytkownik decyduje, że aktualne ceny nie są satysfakcjonujące, ale chce być poinformowany o ich zmianie.
+                    \item Użytkownik wybiera opcję ustawienia alertu cenowego dla danej trasy (i ewentualnie dat).
+                    \item System inicjuje proces ustawiania alertu cenowego (scenariusz PU-BL-10).
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+             \item \textbf{W1: Wyświetlane ceny są nieaktualne.}
+                \begin{enumerate}
+                    \item Mimo starań systemu, ceny wyświetlane w trybie porównawczym (zwłaszcza w kalendarzach cenowych obejmujących dłuższy okres) mogą być orientacyjne i nieznacznie różnić się od cen dostępnych w momencie przejścia do rezerwacji.
+                    \item System powinien informować użytkownika o możliwej orientacyjności cen "historycznych" lub "prognozowanych" i konieczności weryfikacji ceny na etapie szczegółów lotu. Ostateczna cena jest zawsze potwierdzana przed płatnością (PU-BL-04 i PU-BL-02).
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BL-06: Dostarczanie danych o połączeniach i cenach biletów lotniczych}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Dostarczanie danych o połączeniach i cenach biletów lotniczych
+    \item \textbf{Opis przypadku użycia:} System zewnętrzny (np. system rezerwacyjny Przewoźnika Lotniczego, Globalny System Dystrybucji - GDS, agregator ofert) udostępnia systemowi OpenTravel aktualne informacje o dostępnych połączeniach lotniczych, ich szczegółach (rozkłady, dostępność miejsc) oraz cenach. Jest to przypadek użycia realizowany głównie przez system zewnętrzny w odpowiedzi na zapytania z OpenTravel.
+    \item \textbf{Aktorzy biorący udział:} Przewoźnik Lotniczy (lub jego system rezerwacyjny/dystrybucyjny), Agregator Ofert Lotniczych
+    \item \textbf{Uzasadnienie:} Zapewnienie systemowi OpenTravel dostępu do aktualnych i wiarygodnych danych lotniczych, co jest fundamentalne dla realizacji funkcji wyszukiwania, wyświetlania szczegółów, porównywania cen i zakupu biletów przez użytkowników końcowych.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item System OpenTravel ma nawiązane i skonfigurowane połączenie (np. poprzez API, standardy NDC/EDIFACT) z systemem zewnętrznym Przewoźnika Lotniczego/agregatora.
+            \item System OpenTravel wysyła do systemu zewnętrznego poprawnie sformułowane zapytanie o dane lotnicze (np. zapytanie o dostępne loty, ceny, szczegóły konkretnego połączenia). Zapytanie jest zgodne ze specyfikacją API dostawcy.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item System zewnętrzny Przewoźnika Lotniczego/agregatora przetwarza otrzymane zapytanie.
+            \item System zewnętrzny zwraca do systemu OpenTravel odpowiedź zawierającą żądane dane o połączeniach i cenach (lub odpowiedni komunikat o błędzie, braku danych, czy statusie przetwarzania).
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item System zewnętrzny (Przewoźnika Lotniczego/agregatora) odbiera zapytanie (request) od systemu OpenTravel. Zapytanie zawiera kryteria wyszukiwania (np. trasa, daty, liczba pasażerów) lub identyfikator konkretnego lotu/oferty.
+            \item System zewnętrzny waliduje otrzymane zapytanie pod kątem poprawności składniowej i semantycznej.
+            \item System zewnętrzny przetwarza zapytanie, odpytując swoją bazę danych o dostępności miejsc, rozkładach lotów, taryfach cenowych lub inne zintegrowane systemy (np. systemy zarządzania przychodami, systemy innych linii lotniczych w przypadku code-share).
+            \item System zewnętrzny kompiluje odpowiedź zawierającą żądane dane (np. listę dostępnych lotów z cenami, szczegółowe informacje o konkretnym locie, potwierdzenie dostępności) w uzgodnionym formacie (np. JSON, XML, zgodnie ze standardem NDC).
+            \item System zewnętrzny wysyła odpowiedź (response) do systemu OpenTravel.
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Zapytanie asynchroniczne (jeśli wspierane).}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Krok 1 Głównego ciągu zdarzeń.} System OpenTravel wysyła zapytanie, które może wymagać dłuższego przetwarzania po stronie systemu zewnętrznego.
+                    \item \textit{Kontekst: Krok 5 Głównego ciągu zdarzeń.} System zewnętrzny natychmiast odsyła potwierdzenie przyjęcia zapytania i informuje, że wyniki zostaną dostarczone później (np. poprzez webhook/callback lub OpenTravel musi cyklicznie odpytywać o status).
+                    \item Po zakończeniu przetwarzania, system zewnętrzny wysyła wyniki do OpenTravel.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Błędne lub nieautoryzowane zapytanie od OpenTravel.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 2 Głównego ciągu zdarzeń.} System zewnętrzny stwierdza, że zapytanie jest niepoprawnie sformułowane, brakuje w nim wymaganych parametrów, lub pochodzi z nieautoryzowanego źródła (np. błędny token API).
+                    \item System zewnętrzny zwraca do OpenTravel odpowiedź z kodem błędu (np. HTTP 400 Bad Request, HTTP 401 Unauthorized, HTTP 403 Forbidden) oraz ewentualnie ze szczegółowym opisem problemu.
+                \end{enumerate}
+            \item \textbf{W2: Brak dostępnych danych spełniających kryteria zapytania.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 3 Głównego ciągu zdarzeń.} System zewnętrzny, mimo poprawnego przetworzenia zapytania, nie znajduje żadnych lotów, taryf czy ofert, które pasowałyby do przekazanych kryteriów.
+                    \item System zewnętrzny zwraca do OpenTravel odpowiedź informującą o braku wyników (np. pusta lista, odpowiedni kod statusu).
+                \end{enumerate}
+            \item \textbf{W3: Wewnętrzny błąd systemu Przewoźnika Lotniczego/agregatora.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Podczas kroku 3 lub 4 Głównego ciągu zdarzeń.} System zewnętrzny napotyka wewnętrzny problem techniczny (np. błąd bazy danych, awaria komponentu systemu), który uniemożliwia mu poprawne przetworzenie zapytania lub wygenerowanie odpowiedzi.
+                    \item System zewnętrzny zwraca do OpenTravel odpowiedź z kodem błędu serwera (np. HTTP 500 Internal Server Error, HTTP 503 Service Unavailable) oraz ewentualnie z ogólnym opisem problemu.
+                \end{enumerate}
+            \item \textbf{W4: Przekroczony limit zapytań (Rate Limiting).}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Przed krokiem 2 Głównego ciągu zdarzeń.} System OpenTravel wysyła zbyt wiele zapytań w krótkim okresie, przekraczając ustalony przez dostawcę limit.
+                    \item System zewnętrzny odrzuca zapytanie, zwracając odpowiedź z kodem błędu informującym o przekroczeniu limitu (np. HTTP 429 Too Many Requests) i ewentualnie z informacją, kiedy kolejne zapytania będą akceptowane.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BL-07: Rezerwacja transportu na/z lotniska}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Rezerwacja transportu na/z lotniska
+    \item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi zarezerwowanie usługi transportowej (np. taksówki, transferu prywatnego, shuttle busa) na lotnisko przed planowanym wylotem lub z lotniska po przylocie. Funkcja ta może być oferowana w ramach procesu rezerwacji biletu lotniczego lub jako oddzielna usługa.
+    \item \textbf{Aktorzy biorący udział:} Użytkownik, Kierowca (wykonawca usługi transportowej), Przewoźnik Prywatny (lub jego system rezerwacyjny - dostawca usługi transportu naziemnego), Dostawca Usług Płatności (system zewnętrzny, jeśli płatność jest realizowana z góry)
+    \item \textbf{Uzasadnienie:} Zapewnienie użytkownikowi kompleksowej obsługi podróży "od drzwi do drzwi", integrując dojazd na lotnisko (lub odbiór z niego) z główną rezerwacją lotu, co zwiększa wygodę i ułatwia planowanie.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Użytkownik jest zalogowany do systemu OpenTravel.
+            \item Użytkownik ma już zarezerwowany lot przez OpenTravel (i system zna szczegóły tego lotu: data, godzina, numer lotu, lotnisko) lub użytkownik ręcznie wprowadza te szczegóły.
+            \item Alternatywnie: Użytkownik jest w trakcie rezerwacji lotu i system na odpowiednim etapie proponuje dodanie usługi transportu na/z lotniska.
+            \item System OpenTravel ma integrację z systemami Przewoźników Prywatnych oferujących usługi transportu naziemnego.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item Usługa transportu na/z lotniska została pomyślnie zarezerwowana.
+            \item Użytkownik otrzymał potwierdzenie rezerwacji usługi transportowej (np. e-mail, powiadomienie w aplikacji, SMS).
+            \item Rezerwacja transportu jest widoczna w historii podróży użytkownika i powiązana z odpowiednim lotem (jeśli dotyczy).
+            \item Płatność za usługę transportową została przetworzona (jeśli usługa wymaga płatności z góry) lub ustalono metodę płatności (np. płatność u kierowcy).
+            \item Informacja o zleceniu została przekazana do systemu Przewoźnika Prywatnego i przypisana do Kierowcy (lub oczekuje na przypisanie).
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item Użytkownik wybiera opcję rezerwacji transportu na/z lotniska. Opcja ta może być dostępna:
+                \begin{itemize}
+                    \item W szczegółach istniejącej rezerwacji lotniczej.
+                    \item Jako sugerowana usługa dodatkowa podczas procesu rezerwacji nowego lotu.
+                    \item Jako osobna funkcja w menu głównym aplikacji.
+                \end{itemize}
+            \item System prosi użytkownika o podanie lub potwierdzenie szczegółów niezbędnych do rezerwacji transportu:
+                \begin{itemize}
+                    \item Kierunek transferu (np. "Na lotnisko", "Z lotniska").
+                    \item Adres początkowy (dla transferu na lotnisko) lub adres docelowy (dla transferu z lotniska).
+                    \item Nazwa lotniska (może być pobrana z rezerwacji lotu).
+                    \item Data i godzina odbioru (system może sugerować godzinę na podstawie danych lotu, uwzględniając czas potrzebny na dojazd i odprawę). Dla transferu z lotniska: data i godzina przylotu, numer lotu (do monitorowania ewentualnych opóźnień).
+                    \item Liczba pasażerów.
+                    \item Przybliżona ilość bagażu (np. liczba walizek).
+                    \item Preferowany typ pojazdu lub klasa usługi (jeśli dostępne są różne opcje, np. standard, premium, van).
+                \end{itemize}
+            \item Użytkownik wprowadza lub potwierdza wymagane dane.
+            \item System OpenTravel wysyła zapytanie do zintegrowanych systemów Przewoźników Prywatnych (lub własnego modułu zarządzania transportem naziemnym) w celu sprawdzenia dostępności usług i uzyskania ofert cenowych dla podanych kryteriów.
+            \item System wyświetla listę dostępnych opcji transportu (np. różne firmy, różne typy pojazdów) wraz z cenami, szacowanym czasem przejazdu i ewentualnymi dodatkowymi informacjami (np. opinie o przewoźniku).
+            \item Użytkownik wybiera jedną z zaprezentowanych opcji transportu.
+            \item System wyświetla pełne podsumowanie wybranej usługi transportowej, w tym ostateczną cenę i warunki.
+            \item Użytkownik potwierdza chęć rezerwacji wybranej usługi.
+            \item Jeśli usługa wymaga przedpłaty lub podania danych płatniczych:
+                \begin{enumerate}
+                    \item Użytkownik wybiera metodę płatności (analogicznie do PU-BL-02, krok 7).
+                    \item System inicjuje proces płatności przez Dostawcę Usług Płatności (analogicznie do PU-BL-02, kroki 9-11).
+                \end{enumerate}
+            \item Po pomyślnej autoryzacji płatności (jeśli dotyczy) lub potwierdzeniu rezerwacji, system OpenTravel wysyła potwierdzenie rezerwacji (zlecenie) do systemu Przewoźnika Prywatnego.
+            \item System Przewoźnika Prywatnego potwierdza przyjęcie zlecenia (może to obejmować przypisanie konkretnego Kierowcy i pojazdu lub oznaczenie zlecenia jako oczekującego na dyspozycję).
+            \item System OpenTravel zapisuje szczegóły rezerwacji transportu w profilu użytkownika, powiązując ją z odpowiednią podróżą/lotem.
+            \item System wyświetla użytkownikowi na ekranie potwierdzenie pomyślnej rezerwacji transportu, zawierające kluczowe informacje (np. dane przewoźnika, miejsce i czas odbioru, cena).
+            \item System wysyła potwierdzenie rezerwacji (np. e-mailem, SMS-em) do użytkownika.
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Płatność u kierowcy.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Zamiast kroku 9a i 9b Głównego ciągu zdarzeń.} Wybrana usługa transportowa dopuszcza płatność bezpośrednio u kierowcy.
+                    \item System informuje o tym użytkownika i pomija etap płatności online. Rezerwacja jest potwierdzana bez przedpłaty.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Brak dostępnych opcji transportu dla podanych kryteriów.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 4 Głównego ciągu zdarzeń.} System nie znajduje żadnych dostępnych usług transportowych spełniających kryteria użytkownika (np. brak pojazdów w danym rejonie o tej porze, specyficzne wymagania co do typu pojazdu).
+                    \item System wyświetla komunikat o braku dostępności usług.
+                    \item Użytkownik może zostać poproszony o zmodyfikowanie kryteriów (np. zmiana godziny odbioru, wybór innego typu pojazdu, rozszerzenie obszaru poszukiwań, jeśli to możliwe) i ponowienie próby.
+                \end{enumerate}
+            \item \textbf{W2: Niepowodzenie płatności (jeśli dotyczy przedpłaty).}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 9b Głównego ciągu zdarzeń.} Analogicznie do sytuacji wyjątkowej A2 w PU-BL-02.
+                \end{enumerate}
+            \item \textbf{W3: Błąd komunikacji z systemem Przewoźnika Prywatnego.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Podczas kroku 4, 10 lub 11 Głównego ciągu zdarzeń.} System OpenTravel napotyka problem podczas komunikacji z systemem rezerwacyjnym Przewoźnika Prywatnego (np. timeout, błąd serwera dostawcy usługi transportowej).
+                    \item System informuje użytkownika o problemie technicznym i może zasugerować ponowienie próby rezerwacji później. Jeśli błąd wystąpił po dokonaniu płatności, system powinien podjąć kroki w celu wyjaśnienia statusu i ewentualnego zwrotu środków.
+                \end{enumerate}
+             \item \textbf{W4: Użytkownik anuluje proces rezerwacji transportu.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Na dowolnym etapie przed krokiem 8 Głównego ciągu zdarzeń.} Użytkownik decyduje się przerwać proces rezerwacji.
+                    \item System anuluje bieżące działania i powraca do poprzedniego ekranu.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BL-08: Zarządzanie kartą pokładową}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Zarządzanie kartą pokładową
+    \item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi dokonanie odprawy online (check-in) za pośrednictwem aplikacji OpenTravel (jeśli jest to wspierane przez API linii lotniczej) oraz przechowywanie i łatwe wyświetlanie elektronicznej karty pokładowej w aplikacji. Obejmuje również możliwość importu karty pokładowej uzyskanej zewnętrznie.
+    \item \textbf{Aktorzy biorący udział:} Użytkownik, Przewoźnik Lotniczy (system zewnętrzny - do odprawy i dostarczenia karty)
+    \item \textbf{Uzasadnienie:} Ułatwienie i przyspieszenie procesu przedodlotowego poprzez integrację odprawy online i cyfrowego przechowywania karty pokładowej bezpośrednio w aplikacji OpenTravel, co eliminuje potrzebę korzystania z wielu aplikacji lub drukowania dokumentów.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Użytkownik jest zalogowany do systemu OpenTravel.
+            \item Użytkownik ma w systemie OpenTravel zakupiony i potwierdzony bilet lotniczy, dla którego chce zarządzać kartą pokładową.
+            \item Okno czasowe na dokonanie odprawy online dla danego lotu jest otwarte (zgodnie z regulaminem danej linii lotniczej).
+            \item Dla odprawy przez OpenTravel: Linia lotnicza udostępnia odpowiednie API pozwalające na przeprowadzenie odprawy i pobranie karty pokładowej przez systemy trzecie.
+            \item Dla importu: Użytkownik posiada już plik elektronicznej karty pokładowej (np. PDF, PKPASS) lub jej kod QR, uzyskany np. ze strony linii lotniczej.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item W przypadku pomyślnej odprawy online przez OpenTravel: Użytkownik został odprawiony na lot, a jego elektroniczna karta pokładowa jest wygenerowana i zapisana w aplikacji.
+            \item W przypadku pomyślnego importu: Elektroniczna karta pokładowa użytkownika jest zapisana i dostępna w aplikacji OpenTravel.
+            \item Karta pokładowa jest gotowa do okazania w formie cyfrowej na odpowiednich etapach kontroli na lotnisku.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń (Odprawa online za pośrednictwem OpenTravel):}
+        \begin{enumerate}
+            \item Użytkownik, w szczegółach swojej rezerwacji lotniczej, wybiera opcję "Odprawa online" lub "Check-in".
+            \item System OpenTravel łączy się z systemem rezerwacyjnym/odprawy Przewoźnika Lotniczego, przekazując dane identyfikujące rezerwację.
+            \item System Przewoźnika Lotniczego udostępnia formularz odprawy (lub kolejne kroki procesu odprawy). Może to obejmować:
+                \begin{itemize}
+                    \item Potwierdzenie danych pasażera(ów).
+                    \item Wprowadzenie dodatkowych wymaganych danych (np. numer dokumentu podróży, data ważności, obywatelstwo – jeśli nie były podane wcześniej).
+                    \item Wybór miejsca w samolocie (jeśli dostępny i nie został wybrany wcześniej).
+                    \item Akceptację regulaminów dotyczących przewozu towarów niebezpiecznych.
+                    \item Opcjonalnie: dodanie numeru karty stałego pasażera.
+                \end{itemize}
+            \item Użytkownik uzupełnia/potwierdza wszystkie wymagane informacje w interfejsie OpenTravel, który komunikuje się z systemem przewoźnika.
+            \item Użytkownik zatwierdza dokonanie odprawy.
+            \item System OpenTravel przesyła kompletne dane odprawy do systemu Przewoźnika Lotniczego.
+            \item System Przewoźnika Lotniczego przetwarza żądanie odprawy, generuje elektroniczną kartę (lub karty) pokładową i odsyła ją (lub link do niej) do systemu OpenTravel.
+            \item System OpenTravel zapisuje otrzymaną kartę pokładową (np. w formacie PDF, PKPASS, lub jako dane do wygenerowania kodu QR) i powiązuje ją z rezerwacją użytkownika.
+            \item System wyświetla użytkownikowi potwierdzenie pomyślnej odprawy oraz udostępnia możliwość natychmiastowego wyświetlenia/pobrania karty pokładowej.
+        \end{enumerate}
+    \item \textbf{Główny ciąg zdarzeń (Import istniejącej karty pokładowej):}
+        \begin{enumerate}
+            \item Użytkownik, który dokonał odprawy zewnętrznie (np. na stronie linii lotniczej) i posiada plik karty pokładowej, wybiera w OpenTravel opcję "Dodaj/Importuj kartę pokładową" dla odpowiedniej rezerwacji.
+            \item System prezentuje opcje importu:
+                \begin{itemize}
+                    \item Przesłanie pliku (np. PDF, PKPASS, obrazu).
+                    \item Zeskanowanie kodu QR z innej karty pokładowej (np. z ekranu innego urządzenia lub wydruku).
+                \end{itemize}
+            \item Użytkownik wybiera metodę i importuje kartę.
+            \item System przetwarza zaimportowany plik/kod, w miarę możliwości odczytuje z niego kluczowe dane (dla lepszej prezentacji) i zapisuje kartę, powiązując ją z rezerwacją.
+            \item System potwierdza pomyślny import, a karta pokładowa staje się dostępna do wyświetlenia w aplikacji.
+        \end{enumerate}
+    \item \textbf{Główny ciąg zdarzeń (Wyświetlanie zapisanej karty pokładowej):}
+        \begin{enumerate}
+            \item Użytkownik, w szczegółach swojej rezerwacji lub w dedykowanej sekcji "Moje karty pokładowe", wybiera opcję wyświetlenia konkretnej karty.
+            \item System wyświetla zapisaną elektroniczną kartę pokładową w odpowiednim formacie (np. renderuje PDF, wyświetla obraz kodu QR, prezentuje dane z pliku PKPASS).
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Odprawa online przez OpenTravel nie jest wspierana dla danej linii lotniczej/rezerwacji.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 1 Głównego ciągu zdarzeń - Odprawa online.} Użytkownik wybiera opcję odprawy.
+                    \item System OpenTravel stwierdza (na podstawie konfiguracji lub odpowiedzi API przewoźnika), że odprawa bezpośrednia nie jest możliwa.
+                    \item System informuje użytkownika, że dla tej linii lotniczej/rezerwacji odprawa musi być dokonana bezpośrednio na stronie internetowej lub w aplikacji przewoźnika.
+                    \item System może (jeśli to możliwe) udostępnić bezpośredni link do strony odprawy danej linii lotniczej.
+                    \item System może zaoferować opcję importu karty pokładowej po jej uzyskaniu od przewoźnika (przejście do Głównego ciągu zdarzeń - Import).
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Błąd podczas procesu odprawy online z systemem Przewoźnika Lotniczego.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Podczas kroków 2-7 Głównego ciągu zdarzeń - Odprawa online.} System Przewoźnika Lotniczego zwraca błąd (np. nieprawidłowe dane pasażera nieakceptowane przez przewoźnika, problem techniczny po stronie przewoźnika, rezerwacja niekwalifikująca się do odprawy online z jakiegoś powodu).
+                    \item System OpenTravel wyświetla użytkownikowi komunikat o błędzie, starając się przekazać jak najwięcej informacji otrzymanych od przewoźnika.
+                    \item Użytkownik jest instruowany, aby spróbować ponownie później (jeśli błąd mógł być tymczasowy) lub dokonać odprawy bezpośrednio u przewoźnika.
+                \end{enumerate}
+            \item \textbf{W2: Nieprawidłowy format lub uszkodzony plik podczas importu karty pokładowej.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 3 Głównego ciągu zdarzeń - Import.} Użytkownik próbuje zaimportować plik w nieobsługiwanym formacie, plik jest uszkodzony, lub system nie jest w stanie odczytać z niego danych karty pokładowej.
+                    \item System wyświetla komunikat o błędzie importu i informuje o obsługiwanych formatach lub możliwych przyczynach problemu.
+                \end{enumerate}
+            \item \textbf{W3: Okno czasowe na odprawę jest zamknięte lub jeszcze nieotwarte.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Przed krokiem 2 Głównego ciągu zdarzeń - Odprawa online.} Użytkownik próbuje dokonać odprawy, ale system (na podstawie danych od przewoźnika lub ogólnych reguł) stwierdza, że jest za wcześnie lub za późno na odprawę online.
+                    \item System informuje użytkownika o niemożności dokonania odprawy w tym momencie i podaje prawidłowy zakres czasowy, w którym odprawa będzie możliwa.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BL-09: Sprawdzanie statusu lotu}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Sprawdzanie statusu lotu
+    \item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi sprawdzenie aktualnego statusu konkretnego lotu (np. planowy, opóźniony, odwołany, w trakcie lotu, wylądował). Funkcja może dotyczyć lotów zarezerwowanych przez użytkownika w OpenTravel lub dowolnego innego lotu, jeśli użytkownik poda wystarczające dane identyfikacyjne.
+    \item \textbf{Aktorzy biorący udział:} Użytkownik, Przewoźnik Lotniczy (system zewnętrzny) / Zewnętrzny Dostawca danych o statusach lotów (np. FlightStats, FlightAware)
+    \item \textbf{Uzasadnienie:} Dostarczenie użytkownikom aktualnych i wiarygodnych informacji o statusie lotu, co jest szczególnie istotne w dniu podróży dla pasażerów oraz osób odbierających lub odprowadzających pasażerów.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Dla sprawdzania statusu własnego lotu: Użytkownik jest zalogowany i ma rezerwację lotniczą w systemie OpenTravel.
+            \item Dla sprawdzania statusu dowolnego lotu: Użytkownik zna numer lotu lub trasę (lotnisko wylotu i przylotu) oraz datę lotu, którego status chce sprawdzić.
+            \item System OpenTravel ma integrację z co najmniej jednym zewnętrznym źródłem danych o statusach lotów.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item System wyświetla użytkownikowi aktualny status wyszukiwanego lotu wraz z dostępnymi szczegółami (np. przewidywany/rzeczywisty czas wylotu/przylotu, terminal, bramka).
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń (Sprawdzanie statusu własnego, zapisanego lotu):}
+        \begin{enumerate}
+            \item Użytkownik, w szczegółach swojej rezerwacji lotniczej w OpenTravel, wybiera opcję "Sprawdź status lotu" lub system automatycznie prezentuje status, jeśli jest on częścią widoku rezerwacji.
+            \item System OpenTravel, posiadając dane identyfikacyjne lotu (numer lotu, linia lotnicza, data) z zapisanej rezerwacji, automatycznie wysyła zapytanie do zintegrowanego zewnętrznego systemu dostarczającego dane o statusach lotów.
+            \item Zewnętrzny system przetwarza zapytanie i zwraca aktualne informacje o statusie lotu.
+            \item System OpenTravel odbiera odpowiedź i wyświetla status lotu użytkownikowi. Informacje mogą obejmować:
+                \begin{itemize}
+                    \item Status ogólny (np. "Planowy", "Opóźniony", "Odwołany", "W trakcie lotu", "Wylądował").
+                    \item Planowane, przewidywane i/lub rzeczywiste godziny wylotu i przylotu.
+                    \item Informacje o terminalu i bramce (gate) – jeśli dostępne.
+                    \item Ewentualne przyczyny opóźnień lub odwołań (jeśli udostępnione).
+                \end{itemize}
+        \end{enumerate}
+    \item \textbf{Główny ciąg zdarzeń (Sprawdzanie statusu dowolnego lotu):}
+        \begin{enumerate}
+            \item Użytkownik wybiera w aplikacji ogólną funkcję "Sprawdź status lotu" (niekoniecznie powiązaną z konkretną rezerwacją).
+            \item System wyświetla formularz, w którym użytkownik może wprowadzić dane identyfikacyjne lotu:
+                \begin{itemize}
+                    \item Numer lotu (np. LO123, LH4567).
+                    \item LUB Trasa: lotnisko/miasto wylotu oraz lotnisko/miasto przylotu.
+                    \item Data lotu.
+                \end{itemize}
+            \item Użytkownik wprowadza wymagane dane i inicjuje wyszukiwanie statusu.
+            \item System OpenTravel wysyła zapytanie z wprowadzonymi danymi do zintegrowanego zewnętrznego systemu dostarczającego dane o statusach lotów.
+            \item Zewnętrzny system przetwarza zapytanie. Jeśli kryteria nie były jednoznaczne (np. podano tylko trasę i datę, a na tej trasie jest wiele lotów), system może zwrócić listę pasujących lotów do wyboru przez użytkownika.
+            \item Po jednoznacznym zidentyfikowaniu lotu, zewnętrzny system zwraca jego aktualny status.
+            \item System OpenTravel odbiera odpowiedź i wyświetla status lotu (lub lotów do wyboru, a następnie status wybranego) użytkownikowi, analogicznie do informacji w kroku 4 Głównego ciągu zdarzeń dla własnego lotu.
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Użytkownik subskrybuje powiadomienia o zmianach statusu lotu.}
+                \begin{enumerate}
+                    \item Po wyświetleniu statusu lotu, system oferuje użytkownikowi opcję włączenia powiadomień (push, e-mail) o wszelkich zmianach statusu tego lotu (np. opóźnienie, zmiana bramki, odwołanie).
+                    \item Użytkownik aktywuje subskrypcję.
+                    \item System OpenTravel będzie w tle monitorował status lotu i wysyłał powiadomienia o istotnych zmianach.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Nie znaleziono lotu spełniającego podane kryteria.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 2 lub 4 odpowiedniego Głównego ciągu zdarzeń.} Zewnętrzny system dostarczający dane o statusach lotów nie znajduje żadnego lotu, który pasowałby do podanych przez użytkownika (lub system) kryteriów identyfikacyjnych.
+                    \item System OpenTravel wyświetla komunikat "Nie znaleziono lotu" lub "Brak danych dla podanych kryteriów".
+                    \item Użytkownik (w przypadku sprawdzania dowolnego lotu) może poprawić wprowadzone dane i spróbować ponownie.
+                \end{enumerate}
+            \item \textbf{W2: Błąd komunikacji z zewnętrznym systemem dostawcy statusów lotów.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Podczas kroku 2 lub 4 odpowiedniego Głównego ciągu zdarzeń.} System OpenTravel napotyka problem podczas komunikacji z zewnętrznym systemem (np. timeout, błąd serwera dostawcy danych).
+                    \item System OpenTravel wyświetla komunikat o błędzie technicznym informujący, że status lotu nie mógł zostać w tym momencie pobrany.
+                    \item Użytkownik może mieć możliwość ponowienia próby sprawdzenia statusu.
+                \end{enumerate}
+            \item \textbf{W3: Informacje o statusie lotu są jeszcze niedostępne lub są ograniczone.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 3 lub 6 odpowiedniego Głównego ciągu zdarzeń.} Lot jest zbyt odległy w czasie (np. więcej niż kilka dni przed planowanym wylotem), aby zewnętrzny system posiadał szczegółowe, dynamiczne informacje o jego statusie (np. numer bramki, informacje o opóźnieniach).
+                    \item System może wyświetlić jedynie podstawowe, planowe informacje (np. "Lot planowy zgodnie z rozkładem") i ewentualnie komunikat, że bardziej szczegółowe dane będą dostępne bliżej terminu wylotu.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BL-10: Otrzymywanie alertów cenowych na loty}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Otrzymywanie alertów cenowych na loty
+    \item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi zdefiniowanie i subskrypcję alertu cenowego dla określonej trasy lotniczej (i ewentualnie konkretnych dat lub przedziału czasowego). System będzie następnie monitorował ceny dla tej trasy i automatycznie powiadamiał użytkownika o istotnych zmianach cenowych (np. gdy cena spadnie lub wzrośnie o określoną wartość/procent, lub osiągnie pożądany przez użytkownika poziom).
+    \item \textbf{Aktorzy biorący udział:} Użytkownik, System OpenTravel (jako monitorujący i wysyłający powiadomienia), Przewoźnik Lotniczy / Agregator (jako źródło danych o cenach do monitorowania)
+    \item \textbf{Uzasadnienie:} Pomoc użytkownikowi w znalezieniu najlepszego momentu na zakup biletu lotniczego poprzez automatyczne śledzenie zmian cenowych, co może prowadzić do oszczędności finansowych.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Użytkownik jest zalogowany do systemu OpenTravel (alerty są zazwyczaj powiązane z kontem użytkownika).
+            \item Użytkownik wie, dla jakiej trasy (lotnisko/miasto wylotu i przylotu) oraz ewentualnie dla jakich dat lub przedziału czasowego chciałby śledzić ceny.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item Alert cenowy dla wybranej trasy/dat został pomyślnie skonfigurowany i jest aktywny w systemie.
+            \item System OpenTravel cyklicznie monitoruje ceny dla subskrybowanego alertu.
+            \item Użytkownik będzie otrzymywał powiadomienia (np. e-mail, powiadomienie push w aplikacji) za każdym razem, gdy system wykryje zmianę ceny spełniającą kryteria alertu.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń (Konfiguracja i aktywacja alertu):}
+        \begin{enumerate}
+            \item Użytkownik wybiera opcję "Ustaw alert cenowy" lub "Śledź ceny". Opcja ta może być dostępna np. po przeprowadzeniu wyszukiwania lotów (PU-BL-03) lub w dedykowanej sekcji zarządzania alertami w profilu użytkownika.
+            \item System wyświetla formularz konfiguracji alertu cenowego, prosząc o podanie:
+                \begin{itemize}
+                    \item Lotnisko/miasto wylotu.
+                    \item Lotnisko/miasto przylotu.
+                    \item Opcjonalnie: Konkretne daty wylotu i powrotu (dla śledzenia cen dla konkretnego terminu).
+                    \item Opcjonalnie: Elastyczny zakres dat (np. podróż w konkretnym miesiącu, podróż na określoną liczbę dni).
+                    \item Opcjonalnie: Pożądana cena (system powiadomi, gdy cena spadnie poniżej tego poziomu).
+                    \item Opcjonalnie: Kryteria powiadomień (np. powiadamiaj o każdej zmianie, tylko o spadkach, o spadku o X% lub Y PLN).
+                    \item Metoda powiadomienia (np. e-mail, powiadomienie push – może być domyślnie skonfigurowana w profilu).
+                \end{itemize}
+            \item Użytkownik wypełnia formularz zgodnie ze swoimi preferencjami i zatwierdza utworzenie alertu (np. przycisk "Ustaw alert").
+            \item System waliduje wprowadzone dane.
+            \item System zapisuje konfigurację alertu w bazie danych, powiązując go z kontem użytkownika.
+            \item System wyświetla potwierdzenie pomyślnego ustawienia alertu cenowego.
+            \item System rozpoczyna proces monitorowania cen dla nowo utworzonego alertu.
+        \end{enumerate}
+    \item \textbf{Główny ciąg zdarzeń (Monitorowanie i wysyłanie powiadomień - proces automatyczny w tle):}
+        \begin{enumerate}
+            \item System OpenTravel cyklicznie (np. raz dziennie, co kilka godzin, w zależności od konfiguracji i możliwości technicznych) odpytuje zintegrowane systemy Przewoźników Lotniczych/agregatorów o aktualne ceny dla tras objętych aktywnymi alertami użytkowników.
+            \item Dla każdego alertu, system porównuje aktualnie pobraną cenę z ceną zapisaną podczas poprzedniego sprawdzenia lub z kryteriami zdefiniowanymi przez użytkownika (np. pożądana cena).
+            \item Jeśli system wykryje zmianę ceny, która spełnia warunki do wysłania powiadomienia dla danego alertu:
+                \begin{enumerate}
+                    \item System generuje treść powiadomienia dla użytkownika (np. "Cena lotu na trasie [Trasa] spadła do [Nowa Cena]!").
+                    \item System wysyła powiadomienie do użytkownika za pośrednictwem wybranej metody (e-mail, powiadomienie push). Powiadomienie może zawierać bezpośredni link do wyszukania lotów z aktualną ceną w OpenTravel.
+                \end{enumerate}
+        \end{enumerate}
+    \item \textbf{Główny ciąg zdarzeń (Zarządzanie istniejącymi alertami):}
+        \begin{enumerate}
+            \item Użytkownik przechodzi do sekcji zarządzania swoimi alertami cenowymi (np. w ustawieniach profilu).
+            \item System wyświetla listę wszystkich aktywnych (i ewentualnie historycznych) alertów cenowych skonfigurowanych przez użytkownika.
+            \item Użytkownik ma możliwość edycji parametrów istniejącego alertu (np. zmiana dat, pożądanej ceny) lub jego całkowitego usunięcia (dezaktywacji).
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Ustawianie alertu bezpośrednio z wyników wyszukiwania.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Krok 1 Głównego ciągu zdarzeń - Konfiguracja.} Po wyświetleniu wyników wyszukiwania lotów (PU-BL-03), użytkownik znajduje przycisk/opcję "Śledź ceny dla tego wyszukiwania" lub podobną.
+                    \item System automatycznie wypełnia formularz konfiguracji alertu danymi z ostatniego wyszukiwania (trasa, daty, liczba pasażerów).
+                    \item Użytkownik może zmodyfikować te dane lub od razu zatwierdzić utworzenie alertu. Scenariusz kontynuuje od kroku 3 Głównego ciągu zdarzeń - Konfiguracja.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Błąd zapisu konfiguracji alertu.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 4 Głównego ciągu zdarzeń - Konfiguracja.} System napotyka problem techniczny podczas próby zapisania konfiguracji alertu w bazie danych.
+                    \item System wyświetla komunikat o błędzie, informując, że alert nie mógł zostać utworzony.
+                \end{enumerate}
+            \item \textbf{W2: Niemożność efektywnego śledzenia cen dla bardzo specyficznej trasy/dat.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Podczas kroku 5 Głównego ciągu zdarzeń - Konfiguracja lub podczas monitorowania.} Systemy zewnętrzne mogą nie dostarczać wystarczająco granularnych lub często aktualizowanych danych dla bardzo rzadkich tras, specyficznych połączeń lub bardzo odległych dat, co uniemożliwia efektywne działanie alertu.
+                    \item System może poinformować użytkownika o ograniczonej możliwości śledzenia cen dla danych kryteriów lub alert może nie generować powiadomień.
+                \end{enumerate}
+            \item \textbf{W3: Problem z wysyłką powiadomienia.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Podczas kroku 3b Głównego ciągu zdarzeń - Monitorowanie.} System napotyka problem techniczny podczas próby wysłania powiadomienia do użytkownika (np. błąd serwera pocztowego, problem z usługą powiadomień push).
+                    \item System powinien logować takie błędy i ewentualnie ponawiać próbę wysyłki. Użytkownik może nie otrzymać powiadomienia mimo zmiany ceny.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{PU-BL-11: Wyświetlanie mapy lotniska}
+\begin{itemize}
+    \item \textbf{Nazwa przypadku użycia:} Wyświetlanie mapy lotniska
+    \item \textbf{Opis przypadku użycia:} Umożliwia użytkownikowi wyświetlenie interaktywnej mapy terminala lotniskowego (dla lotniska wylotu, przylotu lub przesiadkowego). Mapa może pokazywać lokalizację bramek (gate'ów), sklepów, restauracji, toalet, punktów informacyjnych, saloników (lounges) i innych ważnych punktów użyteczności publicznej (POI - Points of Interest).
+    \item \textbf{Aktorzy biorący udział:} Użytkownik, Zewnętrzny Dostawca danych map lotniskowych (np. Google Indoor Maps, LocusLabs, inne specjalistyczne API) lub wewnętrzna baza danych systemu OpenTravel z mapami.
+    \item \textbf{Uzasadnienie:} Ułatwienie użytkownikom nawigacji po często skomplikowanych i dużych terminalach lotniskowych, pomoc w znalezieniu potrzebnych usług, udogodnień oraz swojej bramki, co przyczynia się do zmniejszenia stresu związanego z podróżą.
+    \item \textbf{Warunki początkowe:}
+        \begin{itemize}
+            \item Użytkownik korzysta z aplikacji OpenTravel.
+            \item Użytkownik ma dostęp do informacji o locie (np. w szczegółach swojej rezerwacji), który wskazuje na konkretne lotnisko, lub użytkownik ręcznie wyszukuje mapę konkretnego lotniska.
+            \item System OpenTravel ma zintegrowany dostęp do danych map lotniskowych (poprzez API dostawcy zewnętrznego lub z własnej, zarządzanej bazy danych).
+            \item Dla danego lotniska mapa jest dostępna w systemie.
+        \end{itemize}
+    \item \textbf{Warunki końcowe:}
+        \begin{itemize}
+            \item System wyświetla interaktywną mapę wybranego lotniska (lub konkretnego terminala na tym lotnisku).
+            \item Użytkownik może nawigować po mapie (przesuwać, przybliżać/oddalać), wyszukiwać określone POI oraz uzyskiwać o nich podstawowe informacje.
+        \end{itemize}
+    \item \textbf{Główny ciąg zdarzeń:}
+        \begin{enumerate}
+            \item Użytkownik wybiera opcję wyświetlenia mapy lotniska. Może to zrobić na kilka sposobów:
+                \begin{itemize}
+                    \item Ze szczegółów swojej rezerwacji lotniczej (np. klikając na nazwę lotniska wylotu/przylotu/przesiadki).
+                    \item Z informacji o statusie lotu, jeśli podana jest bramka (gate) – opcja "Pokaż na mapie".
+                    \item Poprzez dedykowaną funkcję wyszukiwania map lotnisk w aplikacji (np. wpisując kod IATA lotniska lub jego nazwę).
+                \end{itemize}
+            \item System identyfikuje lotnisko (i ewentualnie terminal), dla którego ma być wyświetlona mapa.
+            \item System OpenTravel wysyła zapytanie do zintegrowanego Dostawcy map lotniskowych (lub odpytuje własną bazę) o dane mapy dla zidentyfikowanego lotniska/terminala.
+            \item System odbiera dane mapy (mogą to być kafelki mapy, dane wektorowe, informacje o POI itp.).
+            \item System renderuje i wyświetla interaktywną mapę lotniska/terminala. Mapa może domyślnie pokazywać określony poziom (piętro) i obszar.
+            \item Użytkownik ma możliwość interakcji z mapą:
+                \begin{itemize}
+                    \item Przybliżanie i oddalanie widoku (pinch-to-zoom lub przyciski +/-).
+                    \item Przesuwanie mapy (pan).
+                    \item Wybór różnych poziomów/pięter terminala (jeśli dotyczy).
+                \end{itemize}
+            \item System udostępnia funkcję wyszukiwania POI na mapie (np. pole tekstowe "Szukaj bramek, sklepów..."). Użytkownik może wpisać np. "toalety", "gate B25", "Starbucks", "informacja".
+            \item System może również wyświetlać predefiniowane kategorie POI do filtrowania lub szybkiego wyboru (np. ikony dla restauracji, sklepów, bramek, toalet).
+            \item Po wyszukaniu lub wybraniu POI/kategorii, system podświetla odpowiednie lokalizacje na mapie.
+            \item Po kliknięciu na konkretny POI na mapie, system może wyświetlić dodatkowe informacje o nim (np. nazwa, godziny otwarcia, krótki opis, numer bramki).
+        \end{enumerate}
+    \item \textbf{Alternatywne ciągi zdarzeń:}
+        \begin{itemize}
+            \item \textbf{A1: Wyświetlanie trasy do wybranego POI (nawigacja wewnętrzna - jeśli wspierana).}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 10 Głównego ciągu zdarzeń.} Użytkownik wybiera konkretny POI na mapie.
+                    \item System oferuje opcję "Prowadź do" lub "Pokaż trasę".
+                    \item Jeśli system wspiera nawigację wewnętrzną i potrafi określić przybliżoną lokalizację użytkownika na lotnisku (np. na podstawie Wi-Fi, beaconów, lub jeśli użytkownik ręcznie wskaże punkt startowy), system oblicza i wyświetla sugerowaną trasę pieszą do wybranego POI na mapie.
+                \end{enumerate}
+        \end{itemize}
+    \item \textbf{Sytuacje wyjątkowe:}
+        \begin{itemize}
+            \item \textbf{W1: Mapa dla wybranego lotniska lub terminala jest niedostępna w systemie.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 2 Głównego ciągu zdarzeń.} System stwierdza, że nie posiada danych mapy dla żądanego lotniska lub terminala.
+                    \item System wyświetla stosowny komunikat użytkownikowi, np. "Mapa dla tego lotniska nie jest obecnie dostępna".
+                \end{enumerate}
+            \item \textbf{W2: Błąd podczas ładowania lub wyświetlania danych mapy.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Podczas kroku 4 lub 5 Głównego ciągu zdarzeń.} System napotyka problem techniczny podczas pobierania danych mapy od dostawcy zewnętrznego (np. błąd sieci, błąd API dostawcy) lub podczas renderowania mapy w aplikacji.
+                    \item System wyświetla komunikat o błędzie. Użytkownik może mieć możliwość ponowienia próby załadowania mapy.
+                \end{enumerate}
+            \item \textbf{W3: Funkcja wyszukiwania POI nie zwraca wyników lub zwraca nieoczekiwane wyniki.}
+                \begin{enumerate}
+                    \item \textit{Kontekst: Po kroku 7 Głównego ciągu zdarzeń.} Użytkownik wprowadza zapytanie wyszukiwania POI, ale system nie znajduje pasujących punktów lub wyniki są nieadekwatne.
+                    \item System informuje o braku wyników lub wyświetla dostępne. Użytkownik może spróbować innego zapytania.
+                \end{enumerate}
+        \end{itemize}
+\end{itemize}
+
+\end{document}

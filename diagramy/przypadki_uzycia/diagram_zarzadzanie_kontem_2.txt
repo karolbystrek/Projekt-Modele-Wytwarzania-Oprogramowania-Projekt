@@ -1,0 +1,30 @@
+@startuml
+!include ../../aws-orange-theme.puml
+left to right direction
+title "Zarządzanie Kontem i Funkcje Ogólne - Część 2"
+
+actor Uzytkownik as "Użytkownik"
+actor Admin as "Administrator Systemu"
+actor Kierowca
+
+package "Zarządzanie Kontem i Funkcje Ogólne" {
+  usecase UC9 as "Przeglądanie historii kursów"
+  usecase UC10 as "Konfiguracja preferencji powiadomień"
+  usecase UC11 as "Przeglądanie historii\nzakupionych biletów"
+  usecase UC12 as "Wyświetlanie aktywnego biletu\ndo kontroli"
+  usecase UC13 as "Uzyskiwanie pomocy"
+  usecase UC14 as "Zarządzanie kontami użytkowników"
+  usecase UC15 as "Monitorowanie stanu systemu i logów"
+  usecase UC16 as "Generowanie raportów systemowych"
+}
+
+Kierowca -- UC9
+Uzytkownik -- UC10
+Uzytkownik -- UC11
+Uzytkownik -- UC12
+Uzytkownik -- UC13
+Kierowca -- UC13
+Admin -- UC14
+Admin -- UC15
+Admin -- UC16
+@enduml

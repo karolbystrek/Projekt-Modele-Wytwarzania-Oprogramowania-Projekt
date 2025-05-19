@@ -1,0 +1,60 @@
+@startuml
+!include ../../aws-orange-theme.puml
+left to right direction
+title "Przypadki Użycia: Bilety Lotnicze"
+
+actor Uzytkownik as "Użytkownik"
+actor PrzewoznikLotniczy as "Przewoźnik Lotniczy" <<system>>
+actor Kierowca
+actor PrzewoznikPrywatny as "Przewoźnik Prywatny" <<system>>
+actor DostawcaUslugPlatnosci as "Dostawca Usług Płatności" <<system>>
+
+package "Bilety Lotnicze" {
+  usecase UC_BL1 as "Ustawianie preferencji\nwyszukiwania lotów"
+  usecase UC_BL2 as "Wyszukiwanie połączeń lotniczych"
+  usecase UC_BL3 as "Wyświetlanie szczegółów\npołączenia lotniczego"
+  usecase UC_BL4 as "Porównywanie cen biletów lotniczych"
+  usecase UC_BL_ZAKUP as "Zakup/Rezerwacja biletu lotniczego"
+  usecase UC_BL5 as "Dostarczanie danych o połączeniach\ni cenach biletów lotniczych"
+  usecase UC_BL6 as "Rezerwacja transportu na/z lotniska"
+  usecase UC_BL7 as "Zarządzanie kartą pokładową"
+  usecase UC_BL8 as "Sprawdzanie statusu lotu"
+  usecase UC_BL9 as "Otrzymywanie alertów cenowych\nna loty"
+  usecase UC_BL10 as "Wyświetlanie mapy lotniska"
+
+  usecase ProcessPayment as "Przetwarzanie płatności" <<include>>
+}
+
+Uzytkownik -- UC_BL1
+Uzytkownik -- UC_BL2
+UC_BL2 -- PrzewoznikLotniczy
+
+Uzytkownik -- UC_BL3
+UC_BL3 -- PrzewoznikLotniczy
+
+Uzytkownik -- UC_BL4
+UC_BL4 -- PrzewoznikLotniczy
+
+Uzytkownik -- UC_BL_ZAKUP
+UC_BL_ZAKUP -- PrzewoznikLotniczy
+UC_BL_ZAKUP ..> ProcessPayment : <<include>>
+
+PrzewoznikLotniczy -- UC_BL5
+
+Uzytkownik -- UC_BL6
+UC_BL6 -- Kierowca
+UC_BL6 -- PrzewoznikPrywatny
+UC_BL6 ..> ProcessPayment : <<include>>
+
+ProcessPayment -- DostawcaUslugPlatnosci
+
+Uzytkownik -- UC_BL7
+UC_BL7 -- PrzewoznikLotniczy
+
+Uzytkownik -- UC_BL8
+UC_BL8 -- PrzewoznikLotniczy
+
+Uzytkownik -- UC_BL9
+
+Uzytkownik -- UC_BL10
+@enduml

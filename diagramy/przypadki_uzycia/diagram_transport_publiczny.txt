@@ -1,0 +1,42 @@
+@startuml
+!include ../../aws-orange-theme.puml
+left to right direction
+title "Przypadki Użycia: Transport Publiczny"
+
+actor Uzytkownik as "Użytkownik"
+actor UzytkownikZN as "Użytkownik z niepełnosprawnością"
+Uzytkownik <|-- UzytkownikZN
+
+actor PrzewoznikMiejski as "Przewoźnik Miejski" <<system>>
+actor DostawcaUslugPlatnosci as "Dostawca Usług Płatności" <<system>>
+
+package "Transport Publiczny" {
+  usecase UC_TP1 as "Wyszukiwanie połączeń\nkomunikacji miejskiej"
+  usecase UC_TP2 as "Wyświetlanie rozkładu jazdy\nkomunikacji miejskiej"
+  usecase UC_TP3 as "Zakup biletu jednorazowego\nna komunikację miejską"
+  usecase UC_TP4 as "Zakup biletu okresowego\nna komunikację miejską"
+  usecase UC_TP5 as "Planowanie trasy multimodalnej"
+  usecase UC_TP6 as "Zapisywanie ulubionych\ntras i przystanków"
+  usecase UC_TP7 as "Otrzymywanie powiadomień o zmianach\nw komunikacji miejskiej"
+  usecase UC_TP8 as "Dostarczanie danych\no transporcie publicznym"
+
+  usecase ProcessPayment as "Przetwarzanie płatności" <<include>>
+}
+
+Uzytkownik -- UC_TP1
+Uzytkownik -- UC_TP2
+Uzytkownik -- UC_TP3
+Uzytkownik -- UC_TP4
+Uzytkownik -- UC_TP5
+Uzytkownik -- UC_TP6
+Uzytkownik -- UC_TP7
+
+UC_TP3 ..> ProcessPayment : <<include>>
+UC_TP4 ..> ProcessPayment : <<include>>
+ProcessPayment -- DostawcaUslugPlatnosci
+
+UC_TP3 -- PrzewoznikMiejski
+UC_TP4 -- PrzewoznikMiejski
+PrzewoznikMiejski -- UC_TP8
+
+@enduml

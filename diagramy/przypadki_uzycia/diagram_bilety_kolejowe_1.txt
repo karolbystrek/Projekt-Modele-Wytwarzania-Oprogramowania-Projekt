@@ -1,0 +1,50 @@
+@startuml
+!include ../../aws-orange-theme.puml
+left to right direction
+title "Przypadki Użycia: Bilety Kolejowe"
+
+actor Uzytkownik as "Użytkownik"
+actor PrzewoznikKolejowy as "Przewoźnik Kolejowy" <<system>>
+actor DostawcaUslugPlatnosci as "Dostawca Usług Płatności" <<system>>
+
+package "Bilety Kolejowe" {
+  usecase UC_BK1 as "Wyszukiwanie połączeń kolejowych"
+  usecase UC_BK2 as "Wyświetlanie szczegółów\npołączenia kolejowego"
+  usecase UC_BK3 as "Wybór miejsca w pociągu"
+  usecase UC_BK4 as "Dodawanie danych pasażera"
+  usecase UC_BK5 as "Zakup biletu kolejowego"
+  usecase UC_BK6 as "Otrzymywanie powiadomień o zmianach\ndotyczących podróży koleją"
+  usecase UC_BK7 as "Anulowanie biletu kolejowego"
+  usecase UC_BK8 as "Wymiana biletu kolejowego"
+  usecase UC_BK9 as "Pobieranie faktury za bilet kolejowy"
+
+  usecase ProcessPayment as "Przetwarzanie płatności" <<include>>
+}
+
+Uzytkownik -- UC_BK1
+Uzytkownik -- UC_BK2
+Uzytkownik -- UC_BK3
+Uzytkownik -- UC_BK4
+Uzytkownik -- UC_BK5
+Uzytkownik -- UC_BK6
+Uzytkownik -- UC_BK7
+Uzytkownik -- UC_BK8
+Uzytkownik -- UC_BK9
+
+UC_BK1 -- PrzewoznikKolejowy
+UC_BK2 -- PrzewoznikKolejowy
+UC_BK3 -- PrzewoznikKolejowy
+
+UC_BK5 ..> ProcessPayment : <<include>>
+ProcessPayment -- DostawcaUslugPlatnosci
+UC_BK5 -- PrzewoznikKolejowy
+
+UC_BK7 ..> ProcessPayment : <<include>>
+UC_BK7 -- PrzewoznikKolejowy
+
+UC_BK8 ..> ProcessPayment : <<include>>
+UC_BK8 -- PrzewoznikKolejowy
+
+UC_BK5 ..> UC_BK3 : <<include>>
+UC_BK5 ..> UC_BK4 : <<include>>
+@enduml

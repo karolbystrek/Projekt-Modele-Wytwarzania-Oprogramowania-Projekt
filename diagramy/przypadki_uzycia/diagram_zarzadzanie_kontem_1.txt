@@ -1,0 +1,38 @@
+@startuml
+!include ../../aws-orange-theme.puml
+left to right direction
+title "Zarządzanie Kontem i Funkcje Ogólne - Część 1"
+
+actor NowyUzytkownik as "Nowy Użytkownik"
+actor NowyKierowca as "Nowy Kierowca"
+actor Uzytkownik as "Użytkownik"
+actor Admin as "Administrator Systemu"
+actor Kierowca
+
+package "Zarządzanie Kontem i Funkcje Ogólne" {
+  usecase UC1 as "Rejestracja w systemie"
+  usecase UC2 as "Logowanie do systemu"
+  usecase UC3 as "Zarządzanie danymi konta"
+  usecase UC4 as "Odzyskiwanie hasła"
+  usecase UC5 as "Zarządzanie metodami płatności"
+  usecase UC6 as "Dodawanie zniżek do konta"
+  usecase UC7 as "Zarządzanie danymi do faktury"
+  usecase UC8 as "Przeglądanie historii podróży"
+}
+
+NowyUzytkownik -- UC1
+NowyKierowca -- UC1
+Uzytkownik -- UC2
+Admin -- UC2
+Kierowca -- UC2
+Uzytkownik -- UC3
+Admin -- UC3
+Kierowca -- UC3
+Uzytkownik -- UC4
+Admin -- UC4
+Kierowca -- UC4
+Uzytkownik -- UC5
+Uzytkownik -- UC6
+Uzytkownik -- UC7
+Uzytkownik -- UC8
+@enduml

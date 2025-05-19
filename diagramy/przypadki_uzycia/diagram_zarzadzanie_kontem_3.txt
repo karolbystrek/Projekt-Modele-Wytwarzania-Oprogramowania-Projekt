@@ -1,0 +1,23 @@
+@startuml
+!include ../../aws-orange-theme.puml
+left to right direction
+title "Zarządzanie Kontem i Funkcje Ogólne - Część 3"
+
+actor Uzytkownik as "Użytkownik"
+actor UzytkownikZN as "Użytkownik z niepełnosprawnością"
+Uzytkownik <|-- UzytkownikZN
+actor Kierowca
+
+package "Zarządzanie Kontem i Funkcje Ogólne" {
+  usecase UC17 as "Wybór preferowanych\nśrodków transportu"
+  usecase UC18 as "Definiowanie preferencji dostępności"
+  usecase UC19 as "Podgląd zarobków"
+  usecase UC20 as "Dodawanie biletów/rezerwacji\ndo kalendarza"
+}
+
+Uzytkownik -- UC17
+UzytkownikZN -- UC18
+Uzytkownik -- UC18
+Kierowca -- UC19
+Uzytkownik -- UC20
+@enduml
