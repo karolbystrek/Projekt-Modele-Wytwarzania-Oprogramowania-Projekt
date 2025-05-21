@@ -1,0 +1,35 @@
+@startuml
+title Zarządzanie danymi do faktury
+
+[*] --> SekcjaFaktury : przejdź do "Dane do faktury"
+
+' Przegląd / Dodawanie nowych danych
+SekcjaFaktury --> FormularzDanychFaktury : wybierz "Dodaj nowe dane"
+FormularzDanychFaktury --> WalidacjaDanychFaktury : wprowadź dane i zatwierdź
+WalidacjaDanychFaktury --> Niepowodzenie : dane niepoprawne / niekompletne / błąd systemu
+WalidacjaDanychFaktury --> DaneZapisane : OK
+
+' Edycja danych
+SekcjaFaktury --> EdycjaDanychFaktury : wybierz zestaw i "Edytuj"
+EdycjaDanychFaktury --> WalidacjaZmian : zatwierdź zmiany
+WalidacjaZmian --> Niepowodzenie : dane niepoprawne / błąd systemu
+WalidacjaZmian --> DaneZapisane : OK
+
+' Usuwanie danych
+SekcjaFaktury --> UsuwanieDanychFaktury : wybierz zestaw i "Usuń"
+UsuwanieDanychFaktury --> PotwierdzenieUsuniecia : potwierdź usunięcie
+PotwierdzenieUsuniecia --> [*]
+
+' Wybór domyślnego zestawu
+SekcjaFaktury --> UstawDomyslnyZestaw : wybierz zestaw i "Ustaw jako domyślny"
+UstawDomyslnyZestaw --> PotwierdzenieZmiany : potwierdzenie
+
+' Anulowanie
+FormularzDanychFaktury --> [*] : anuluj
+EdycjaDanychFaktury --> [*] : anuluj
+
+Niepowodzenie --> [*]
+DaneZapisane --> [*]
+PotwierdzenieZmiany --> [*]
+
+@enduml

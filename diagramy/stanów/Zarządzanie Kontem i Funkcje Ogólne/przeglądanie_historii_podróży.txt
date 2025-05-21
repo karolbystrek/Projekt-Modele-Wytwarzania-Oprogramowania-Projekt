@@ -1,0 +1,18 @@
+@startuml
+title Przeglądanie historii podróży
+
+[*] --> ListaPodrozy : przejdź do "Historia podróży"
+
+ListaPodrozy --> KomunikatBrakDanych : brak historii podróży
+ListaPodrozy --> BłądSystemowy : błąd ładowania danych
+ListaPodrozy --> ListaPodrozy : użyj filtrów / sortowania
+ListaPodrozy --> SzczegolyPodrozy : wybierz podróż z listy
+
+SzczegolyPodrozy --> EksportDanych : wybierz "Eksportuj"
+EksportDanych --> [*] : zakończ eksport
+
+KomunikatBrakDanych --> [*]
+BłądSystemowy --> [*]
+SzczegolyPodrozy --> [*]
+
+@enduml

@@ -1,0 +1,24 @@
+@startuml
+title Definiowanie preferencji dostępności
+
+[*] --> UstawieniaDostepnosci : wybierz "Ustawienia dostępności"
+UstawieniaDostepnosci --> KonfiguracjaDostepnosci : przeglądaj opcje
+KonfiguracjaDostepnosci --> Zatwierdzenie : wybierz i zatwierdź preferencje
+Zatwierdzenie --> ZapisPreferencji : system zapisuje zmiany
+ZapisPreferencji --> Potwierdzenie : potwierdzenie zapisu
+Potwierdzenie --> [*]
+
+KonfiguracjaDostepnosci --> ProfileDostepnosci : wybierz profil dostępności
+ProfileDostepnosci --> [*]
+
+KonfiguracjaDostepnosci --> IntegracjaSystemowa : synchronizacja z ustawieniami urządzenia
+IntegracjaSystemowa --> [*]
+
+ZapisPreferencji --> BladZapisu : błąd techniczny
+BladZapisu --> [*]
+
+KonfiguracjaDostepnosci --> OgraniczenieFunkcji : funkcja niedostępna w regionie/usłudze
+OgraniczenieFunkcji --> [*]
+
+
+@enduml

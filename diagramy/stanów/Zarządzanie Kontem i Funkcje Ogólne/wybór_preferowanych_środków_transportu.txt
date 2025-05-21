@@ -1,0 +1,24 @@
+@startuml
+title Wybór preferowanych środków transportu
+
+[*] --> PanelPreferencji : wybierz "Preferencje transportu"
+PanelPreferencji --> ListaSrodkow : przeglądaj listę środków transportu
+ListaSrodkow --> UstawPreferencje : zaznacz preferencje (ulubiony, unikaj)
+UstawPreferencje --> Zatwierdzenie : zatwierdź zmiany
+Zatwierdzenie --> ZapisPreferencji : zapis preferencji
+ZapisPreferencji --> Potwierdzenie : potwierdzenie zapisu
+Potwierdzenie --> [*]
+
+ListaSrodkow --> KolejnoscPreferencji : ustaw kolejność ulubionych
+KolejnoscPreferencji --> [*]
+
+ListaSrodkow --> ZestawyPreferencji : wybierz zestaw kontekstowy (np. służbowy)
+ZestawyPreferencji --> [*]
+
+ZapisPreferencji --> BladZapisu : błąd techniczny
+BladZapisu --> [*]
+
+UstawPreferencje --> KonfliktPreferencji : wykryto sprzeczne preferencje
+KonfliktPreferencji --> [*]
+
+@enduml

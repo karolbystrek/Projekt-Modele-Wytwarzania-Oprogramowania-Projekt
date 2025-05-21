@@ -1,0 +1,22 @@
+@startuml
+title Konfiguracja preferencji powiadomień
+
+[*] --> UstawieniaPowiadomien : przejdź do "Ustawienia powiadomień"
+
+UstawieniaPowiadomien --> EdytujPreferencje : wybierz typy i kanały powiadomień
+EdytujPreferencje --> PotwierdzenieZmian : zatwierdź zmiany
+PotwierdzenieZmian --> [*] : system zapisuje i potwierdza
+
+UstawieniaPowiadomien --> NiePrzeszkadzac : ustaw okresy "Nie przeszkadzać"
+NiePrzeszkadzac --> [*]
+
+UstawieniaPowiadomien --> GlobalneZarzadzanie : włącz/wyłącz wszystkie powiadomienia
+GlobalneZarzadzanie --> [*]
+
+EdytujPreferencje --> BladZapisu : błąd zapisu ustawień
+BladZapisu --> [*]
+
+EdytujPreferencje --> PowiadomieniaObowiazkowe : niektóre powiadomienia są obowiązkowe
+PowiadomieniaObowiazkowe --> [*]
+
+@enduml

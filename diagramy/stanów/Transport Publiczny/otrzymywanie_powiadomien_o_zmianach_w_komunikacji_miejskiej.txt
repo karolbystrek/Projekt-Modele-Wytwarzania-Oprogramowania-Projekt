@@ -1,0 +1,28 @@
+@startuml
+title Otrzymywanie powiadomień o zmianach w komunikacji miejskiej
+
+[*] --> OczekiwanieZmian
+
+OczekiwanieZmian --> IdentyfikacjaUzytkownikow : wykrycie/ogłoszenie zmiany
+IdentyfikacjaUzytkownikow --> GenerowaniePowiadomienia : wybór odbiorców
+GenerowaniePowiadomienia --> Wysylka : przygotowanie push/SMS
+Wysylka --> OdbiorPowiadomienia : dostarczenie powiadomienia
+OdbiorPowiadomienia --> [*]
+
+' Scenariusze alternatywne
+OczekiwanieZmian --> KonfiguracjaPowiadomien : konfiguracja typów/frekfencji
+KonfiguracjaPowiadomien --> OczekiwanieZmian
+
+IdentyfikacjaUzytkownikow --> PowiadomieniaUlubionych : dla zapisanych tras/przystanków
+PowiadomieniaUlubionych --> GenerowaniePowiadomienia
+
+' Sytuacje wyjątkowe
+OczekiwanieZmian --> BrakDanych : brak lub opóźnione dane od przewoźnika
+BrakDanych --> [*]
+
+Wysylka --> BladWysylki : błąd systemu wysyłki
+BladWysylki --> [*]
+
+GenerowaniePowiadomienia --> WyłączonePowiadomienia : użytkownik wyłączył powiadomienia
+WyłączonePowiadomienia --> [*]
+@enduml

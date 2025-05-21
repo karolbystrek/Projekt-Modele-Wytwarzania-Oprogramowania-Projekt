@@ -1,0 +1,37 @@
+@startuml
+title Dodawanie zniżek do konta
+
+[*] --> ListaZnizek : przejdź do "Zniżki"
+
+' Dodawanie nowej zniżki
+ListaZnizek --> FormularzZnizki : wybierz "Dodaj zniżkę"
+FormularzZnizki --> WprowadzanieDanychZnizki : wprowadź dane zniżki / załącz dokument
+WprowadzanieDanychZnizki --> WalidacjaDanychZnizki : zatwierdź
+
+WalidacjaDanychZnizki --> Niepowodzenie : nieprawidłowy format / kod / dokument
+WalidacjaDanychZnizki --> Niepowodzenie : zniżka już dodana / wygasła / niekompatybilna
+WalidacjaDanychZnizki --> Niepowodzenie : typ nieobsługiwany
+WalidacjaDanychZnizki --> Niepowodzenie : błąd systemowy
+
+WalidacjaDanychZnizki --> ZnizkaDodana : dane poprawne (może wymagać weryfikacji admina)
+
+' Edycja / Usuwanie
+ListaZnizek --> EdycjaZnizki : wybierz zniżkę i "Edytuj"
+EdycjaZnizki --> WalidacjaZmian : zatwierdź zmiany
+WalidacjaZmian --> Niepowodzenie : nieprawidłowe dane
+WalidacjaZmian --> PotwierdzenieZmiany : potwierdzenie
+
+ListaZnizek --> UsuwanieZnizki : wybierz zniżkę i "Usuń"
+UsuwanieZnizki --> PotwierdzenieUsuniecia : potwierdź usunięcie
+
+' Automatyczne sugestie
+[*] --> SugerowaneZnizki : system proponuje zniżki na podstawie danych
+SugerowaneZnizki --> ListaZnizek : zaakceptuj propozycję
+SugerowaneZnizki --> [*] : odrzuć propozycję
+
+Niepowodzenie --> [*]
+ZnizkaDodana --> [*]
+PotwierdzenieZmiany --> [*]
+PotwierdzenieUsuniecia --> [*]
+
+@enduml

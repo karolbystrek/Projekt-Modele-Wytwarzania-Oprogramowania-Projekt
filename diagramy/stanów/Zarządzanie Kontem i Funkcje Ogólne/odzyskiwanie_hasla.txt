@@ -1,0 +1,28 @@
+@startuml
+title Odzyskiwanie hasła
+
+[*] --> WybórOpcjiResetu : wybierz "Zapomniałem hasła"
+WybórOpcjiResetu --> WalidacjaEmaila : podaj e-mail
+
+WalidacjaEmaila --> Niepowodzenie : email nie istnieje
+WalidacjaEmaila --> WysylkaLinku : e-mail istnieje
+WysylkaLinku --> Niepowodzenie : problem techniczny
+WysylkaLinku --> FormularzHasla : kliknięto link
+WysylkaLinku --> FormularzPytaniaBezpieczenstwa : pytanie bezpieczeństwa jest zadane
+FormularzPytaniaBezpieczenstwa --> SprawdzenieOdpowiedzi : wprowadź odpowiedź na pytanie
+SprawdzenieOdpowiedzi --> Niepowodzenie : odpowiedź nie OK
+SprawdzenieOdpowiedzi --> FormularzHasla : odpowiedź OK
+WysylkaLinku --> Niepowodzenie : błąd systemu / link wygasł
+
+FormularzHasla --> WalidacjaHasla : wprowadź nowe hasło 
+FormularzHasla --> Rezygnacja : rezygnuj
+WalidacjaHasla --> FormularzHasla : hasło jest zasłabe
+WalidacjaHasla --> Niepowodzenie : błąd systemu
+WalidacjaHasla  --> HasloZmienione
+
+Niepowodzenie --> [*]
+HasloZmienione --> [*]
+Rezygnacja --> [*]
+
+
+@enduml

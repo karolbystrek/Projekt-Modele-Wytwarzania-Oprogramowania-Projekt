@@ -1,0 +1,30 @@
+@startuml
+title Uzyskiwanie pomocy
+
+[*] --> OpcjePomocy : wybierz "Pomoc"
+
+OpcjePomocy --> PrzegladanieFAQ : wybierz FAQ
+PrzegladanieFAQ --> [*] : przeglądaj/wyszukuj i znajdź odpowiedź
+
+OpcjePomocy --> FormularzKontaktowy : wybierz formularz/czat/telefon
+FormularzKontaktowy --> OpiszProblem : opisz problem lub pytanie
+OpiszProblem --> WyslijZgloszenie : wyślij lub rozpocznij rozmowę
+WyslijZgloszenie --> PotwierdzeniePomocy : otrzymaj pomoc lub potwierdzenie
+PotwierdzeniePomocy --> [*]
+
+OpcjePomocy --> PomocKontekstowa : wybierz "Pomóc kontekstowa"
+PomocKontekstowa --> [*]
+
+FormularzKontaktowy --> SledzenieZgloszenia : wybierz "Śledź zgłoszenie"
+SledzenieZgloszenia --> [*]
+
+FormularzKontaktowy --> BladPolaczenia : brak internetu
+BladPolaczenia --> [*]
+
+FormularzKontaktowy --> NiedostepnoscKanalu : kanał kontaktu niedostępny
+NiedostepnoscKanalu --> [*]
+
+WyslijZgloszenie --> BladWysylania : błąd techniczny
+BladWysylania --> [*]
+
+@enduml

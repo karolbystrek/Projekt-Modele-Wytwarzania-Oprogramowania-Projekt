@@ -1,0 +1,27 @@
+@startuml
+title Zarządzanie kontami użytkowników
+
+[*] --> ListaKont : wybierz "Zarządzanie kontami"
+ListaKont --> SzczegolyKonta : wyszukaj i wybierz konto
+SzczegolyKonta --> AkcjeNaKoncie : wybierz akcję (edytuj, blokuj, usuń, resetuj hasło)
+AkcjeNaKoncie --> PotwierdzenieAkcji : potwierdź (jeśli wymagane)
+PotwierdzenieAkcji --> PrzetwarzanieAkcji 
+PrzetwarzanieAkcji --> [*] : potwierdzenie wykonania
+
+ListaKont --> MasoweOperacje : wybierz wiele kont i akcję
+MasoweOperacje --> PotwierdzenieAkcji : potwierdź operację
+MasoweOperacje --> NiedozwolonaOperacja : akcja zablokowana
+
+SzczegolyKonta --> PrzegladLogow : przeglądaj logi aktywności
+PrzegladLogow --> [*]
+
+AkcjeNaKoncie --> NiedozwolonaOperacja : akcja zablokowana
+NiedozwolonaOperacja --> [*]
+
+PotwierdzenieAkcji --> BladSystemowy : błąd techniczny
+BladSystemowy --> [*]
+
+ListaKont --> KontoNieZnalezione : nie znaleziono konta
+KontoNieZnalezione --> [*]
+
+@enduml

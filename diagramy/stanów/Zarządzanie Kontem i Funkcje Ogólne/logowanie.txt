@@ -1,0 +1,33 @@
+@startuml
+title Logowanie do systemu
+
+[*] --> BrakZalogowania
+
+
+' Logowanie
+BrakZalogowania --> FormularzLogowania : wybierz "Logowanie"
+FormularzLogowania --> BrakZalogowania : przerwanie procesu
+FormularzLogowania --> OdzyskajHaslo : wybierz "Odzyskaj hasło"
+FormularzLogowania --> FormularzLogowaniaZewn : wybierz "Google/Facebook"
+FormularzLogowania --> WeryfikacjaDanych : wprowadź dane i zatwierdź
+FormularzLogowania --> WeryfikacjaDanych : wprowadź dane i zatwierdź z "Zapamiętaj mnie"
+
+WeryfikacjaDanych --> Niepowodzenie : błędne dane logowania
+WeryfikacjaDanych --> BlokadaLogowania : przekroczono limit prób
+WeryfikacjaDanych --> Niepowodzenie : konto nieaktywne / zablokowane
+WeryfikacjaDanych --> Niepowodzenie : błąd systemowy
+
+WeryfikacjaDanych --> LogowanieUdane : dane poprawne
+
+
+FormularzLogowaniaZewn --> LogowanieUdane : autoryzacja Google/Facebook
+FormularzLogowaniaZewn --> Niepowodzenie : odmowa dostępu lub błąd
+
+LogowanieUdane --> [*]
+
+OdzyskajHaslo --> [*] : przekierowanie do PU-ZK-04
+BlokadaLogowania --> [*]
+Niepowodzenie --> [*]
+
+
+@enduml

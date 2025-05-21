@@ -1,0 +1,35 @@
+@startuml
+title Zakup biletu okresowego na komunikację miejską
+
+[*] --> WyborBiletuOkresowego : wybierz "Kup bilet okresowy"
+WyborBiletuOkresowego --> WyswietlCeneIDane : wybierz "wyświetl cenę"
+WyswietlCeneIDane --> PotwierdzenieZakupu : wybierz metodę płatności i potwierdź zakup
+PotwierdzenieZakupu --> PrzetworzeniePlatnosci : przetwórz płatność przez Dostawcę Płatności
+
+PrzetworzeniePlatnosci --> KomunikacjaZPrzewoznikiem : płatność zakończona sukcesem
+KomunikacjaZPrzewoznikiem --> OdbierzBilet : odbierz bilet elektroniczny
+OdbierzBilet --> UdostepnijBilet : udostępnij bilet użytkownikowi
+UdostepnijBilet --> [*]
+
+WyborBiletuOkresowego --> PrzedluzenieBiletu : wybierz "przedłużenie ważności biletu okresowego" 
+PrzedluzenieBiletu --> WyswietlCeneIDane
+
+WyborBiletuOkresowego --> WyborTypuBiletu : wybierz "zmień typ biletu"
+WyborTypuBiletu --> WyswietlCeneIDane : wybierz typ biletu (na okaziciela vs. imiennego) 
+
+PrzetworzeniePlatnosci --> PlatnoscNieudana : nieudana płatność 
+PlatnoscNieudana --> KomunikatBladPlatnosci : komunikat, zakup przerwany
+KomunikatBladPlatnosci --> [*]
+
+KomunikacjaZPrzewoznikiem --> BladKomunikacji : błąd komunikacji z Przewoźnikiem po płatności 
+BladKomunikacji --> AnulujPlatnosc : próba anulowania płatności
+AnulujPlatnosc --> [*]
+
+WyswietlCeneIDane --> BrakDanychImiennych : wymagane dane do biletu imiennego niepodane/niezweryfikowane
+BrakDanychImiennych --> WyswietlCeneIDane
+
+WyswietlCeneIDane --> NiedostepnyTypBiletu : wybrany typ biletu/taryfa niedostępny
+NiedostepnyTypBiletu --> [*]
+
+
+@enduml

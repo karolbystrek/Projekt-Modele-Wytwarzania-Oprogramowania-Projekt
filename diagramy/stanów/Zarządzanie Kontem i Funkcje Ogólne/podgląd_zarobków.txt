@@ -1,0 +1,26 @@
+@startuml
+title Podgląd zarobków
+
+[*] --> PodgladZarobkow : wybierz "Podgląd zarobków"
+PodgladZarobkow --> PodsumowanieZarobkow : wyświetl podsumowanie (bieżący okres)
+PodsumowanieZarobkow --> WyborOkresu : wybór okresu lub typu raportu
+WyborOkresu --> SzczegolyZarobkow : lista kursów, kwoty, prowizje, wypłaty
+
+SzczegolyZarobkow --> [*]
+
+WyborOkresu --> GenerowanieZestawienia : pobierz podsumowanie do pliku
+GenerowanieZestawienia --> [*]
+
+SzczegolyZarobkow --> HistoriaWyplat : przegląd zrealizowanych wypłat
+HistoriaWyplat --> [*]
+
+PodgladZarobkow --> BladLadowania : błąd techniczny przy pobieraniu danych
+BladLadowania --> [*]
+
+SzczegolyZarobkow --> Rozbieznosci : rozbieżności w danych – kontakt z pomocą
+Rozbieznosci --> [*]
+
+PodsumowanieZarobkow --> BrakDanych : brak danych za nowy okres
+BrakDanych --> [*]
+
+@enduml

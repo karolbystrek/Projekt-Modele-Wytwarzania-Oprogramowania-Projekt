@@ -1,0 +1,28 @@
+@startuml
+title Dostarczanie danych o transporcie publicznym
+
+[*] --> InicjowanieZapytania
+
+InicjowanieZapytania --> PrzetwarzanieZapytania : wysłanie zapytania do API przewoźnika
+PrzetwarzanieZapytania --> ZwrotDanych : przetworzenie zapytania
+ZwrotDanych --> PrzetwarzanieDanych : zwrot danych w uzgodnionym formacie
+PrzetwarzanieDanych --> UdostępnianieDanych : OpenTravel odbiera i udostępnia dane
+UdostępnianieDanych --> [*]
+
+' Scenariusze alternatywne
+ZwrotDanych --> StrumieniowanieDanych : przesyłanie danych w czasie rzeczywistym
+StrumieniowanieDanych --> PrzetwarzanieDanych
+
+ZwrotDanych --> AktualizacjaOkresowa : okresowe aktualizacje danych statycznych
+AktualizacjaOkresowa --> PrzetwarzanieDanych
+
+' Sytuacje wyjątkowe
+InicjowanieZapytania --> BladKomunikacji : błąd komunikacji lub awaria systemu
+BladKomunikacji --> [*]
+
+ZwrotDanych --> NiepoprawnyFormat : niepoprawny format danych
+NiepoprawnyFormat --> [*]
+
+InicjowanieZapytania --> BrakAutoryzacji : brak autoryzacji do API
+BrakAutoryzacji --> [*]
+@enduml

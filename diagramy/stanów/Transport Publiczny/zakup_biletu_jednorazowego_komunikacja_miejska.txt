@@ -1,0 +1,34 @@
+@startuml
+title Zakup biletu jednorazowego na komunikację miejską
+
+[*] --> WyborBiletu : wybierz "Zakup biletu jednorazowego", określ typ/strefę
+WyborBiletu --> WyswietlCene : wyświetl cenę
+WyswietlCene --> WybierzPlatnosc : wybierz metodę płatności i potwierdź
+WybierzPlatnosc --> AutoryzujPlatnosc : autoryzuj płatność
+AutoryzujPlatnosc --> PrzetworzPlatnosc : przetwórz płatność przez Dostawcę Płatności
+
+PrzetworzPlatnosc --> PlatnoscUdana : płatność zakończona sukcesem
+PlatnoscUdana --> KomunikacjaZPrzewoznikiem : komunikacja z Przewoźnikiem Miejskim
+KomunikacjaZPrzewoznikiem --> OdbierzBilet : odbierz bilet elektroniczny
+OdbierzBilet --> UdostepnijBilet : udostępnij bilet użytkownikowi
+UdostepnijBilet --> [*]
+
+WyborBiletu --> ZakupWieluBiletow : zakup wielu biletów jednorazowych
+ZakupWieluBiletow --> WyswietlCene
+
+WyborBiletu --> OpcjaAktywacji : zakup z opcją natychmiastowej/późniejszej aktywacji
+OpcjaAktywacji --> WyswietlCene
+
+PrzetworzPlatnosc --> PlatnoscNieudana : nieudana płatność
+PlatnoscNieudana --> KomunikatBladPlatnosci : komunikat, zakup przerwany
+KomunikatBladPlatnosci --> [*]
+
+KomunikacjaZPrzewoznikiem --> BladKomunikacji : błąd komunikacji z przewoźnikiem po płatności
+BladKomunikacji --> AnulujPlatnosc : próba anulowania płatności
+AnulujPlatnosc --> [*]
+
+WyborBiletu --> NiedostepnaTaryfa : niedostępna taryfa
+NiedostepnaTaryfa --> KomunikatBladTaryfy : komunikat o błędzie
+KomunikatBladTaryfy --> [*]
+
+@enduml

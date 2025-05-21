@@ -1,0 +1,29 @@
+@startuml
+title Planowanie trasy multimodalnej
+
+[*] --> WybórPlanowania
+
+WybórPlanowania --> WprowadzanieParametrow : wybierz "Planowanie trasy multimodalnej"
+WprowadzanieParametrow --> InicjujWyszukiwanie : zatwierdź parametry
+InicjujWyszukiwanie --> AnalizaOpcji : inicjuj wyszukiwanie
+
+AnalizaOpcji --> ListaTras : obliczono opcje
+ListaTras --> SzczegółyTrasy : wybierz trasę
+SzczegółyTrasy --> [*]
+
+' Scenariusze alternatywne
+WprowadzanieParametrow --> PersonalizacjaPreferencji : personalizacja preferencji
+PersonalizacjaPreferencji --> WprowadzanieParametrow : zatwierdź preferencje
+
+ListaTras --> RezerwacjaBiletów : rezerwacja/zakup biletów
+RezerwacjaBiletów --> ListaTras : potwierdzenie rezerwacji
+
+' Sytuacje wyjątkowe
+AnalizaOpcji --> BrakMożliwychTras : brak możliwości skomponowania trasy
+AnalizaOpcji --> BladKomunikacji : błąd komunikacji z systemami zewn.
+AnalizaOpcji --> KonfliktPreferencji : sprzeczne preferencje
+
+BrakMożliwychTras --> [*]
+BladKomunikacji --> [*]
+KonfliktPreferencji --> [*]
+@enduml

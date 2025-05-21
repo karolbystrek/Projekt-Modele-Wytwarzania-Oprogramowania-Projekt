@@ -1,0 +1,30 @@
+@startuml
+title Wyszukiwanie połączeń komunikacji miejskiej
+
+[*] --> WybierzWyszukiwanie : wybierz wyszukiwanie połączeń
+WybierzWyszukiwanie --> WprowadzDane : podaj punkt startowy, docelowy, opcjonalnie datę/godzinę
+WprowadzDane --> InicjujWyszukiwanie : użytkownik inicjuje wyszukiwanie
+InicjujWyszukiwanie --> PrzetworzZapytanie : wyszukiwanie na teraz
+PrzetworzZapytanie --> WyswietlWyniki : wyświetl listę połączeń (trasa, czas, przesiadki, pojazdy)
+
+WyswietlWyniki --> [*]
+
+WybierzWyszukiwanie --> UzyjUlubionych : użycie zapisanych ulubionych lokalizacji
+UzyjUlubionych --> WprowadzDane
+
+WyswietlWyniki --> WyswietlWyniki : filtrowanie wyników (preferencje środków, unikanie przesiadek)
+
+InicjujWyszukiwanie --> SzukajNaGodzine : wprowadź datę/godzinę
+SzukajNaGodzine --> PrzetworzZapytanie : wyszukiwanie na konkretną datę/godzinę
+
+PrzetworzZapytanie --> BrakPolaczen : brak połączeń, sugeruj alternatywy
+BrakPolaczen --> [*]
+
+PrzetworzZapytanie --> BladSystemu : błąd komunikacji z systemem przewoźnika, wyniki niepełne
+BladSystemu --> [*]
+
+WprowadzDane --> NiepoprawneDane : nierozpoznawalny adres, prośba o korektę
+NiepoprawneDane --> WprowadzDane
+
+
+@enduml

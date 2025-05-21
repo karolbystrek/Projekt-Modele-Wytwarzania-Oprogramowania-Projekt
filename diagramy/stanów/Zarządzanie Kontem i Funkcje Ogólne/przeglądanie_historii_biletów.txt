@@ -1,0 +1,20 @@
+@startuml
+title Przeglądanie historii zakupionych biletów
+
+[*] --> ListaBiletow : przejdź do "Historia biletów"
+
+ListaBiletow --> KomunikatBrakBiletow : brak zakupionych biletów
+ListaBiletow --> BłądSystemowy : błąd ładowania danych
+ListaBiletow --> ListaBiletow : użyj filtrów / sortowania
+ListaBiletow --> SzczegolyBiletu : wybierz bilet z listy
+
+SzczegolyBiletu --> PobierzBilet : wybierz "Pobierz PDF/PKPASS"
+SzczegolyBiletu --> ZarządzanieBiletem : wybierz "Zarządzaj biletem" (np. anuluj)
+
+PobierzBilet --> [*]
+ZarządzanieBiletem --> [*]
+SzczegolyBiletu --> [*]
+KomunikatBrakBiletow --> [*]
+BłądSystemowy --> [*]
+
+@enduml

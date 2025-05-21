@@ -1,0 +1,49 @@
+@startuml
+title Rejestracja w systemie
+
+[*] --> BrakKonta
+
+
+' Rejestracja
+BrakKonta --> FormularzUzytkownika : wybierz "Rejestracja"
+FormularzUzytkownika --> BrakKonta : przerwanie procesu
+FormularzUzytkownika --> Niepowodzenie : brak akceptacji regulaminu
+
+FormularzUzytkownika --> WalidacjaDanychUzytkownika : zatwierdź formularz
+WalidacjaDanychUzytkownika --> Niepowodzenie : błędne dane
+/'WalidacjaDanych --> Niepowodzenie : email już istnieje'/
+/'WalidacjaDanych --> Niepowodzenie : hasło niezgodne'/
+/'WalidacjaDanych --> Niepowodzenie : błędny format danych'/
+
+WalidacjaDanychUzytkownika --> OczekujeNaAktywacje : walidacja OK
+OczekujeNaAktywacje --> Niepowodzenie : błąd systemu / link wygasł
+OczekujeNaAktywacje --> KontoUżytkownikaAktywne : kliknięto link aktywacyjny
+
+' Rejestracja z kontem zewnętrznym
+BrakKonta --> RejestracjaZewnetrzna : wybierz "Google/Facebook"
+RejestracjaZewnetrzna --> Niepowodzenie : brak zgody / błąd
+RejestracjaZewnetrzna --> FormularzUzupelniajacy : dane częściowe
+FormularzUzupelniajacy --> Niepowodzenie : brak akceptacji regulaminu
+FormularzUzupelniajacy --> WalidacjaZewnetrzna : zatwierdź formularz
+WalidacjaZewnetrzna --> KontoUżytkownikaAktywne : walidacja OK
+WalidacjaZewnetrzna --> Niepowodzenie : błędne dane
+
+' Rejestracja kierowcy
+BrakKonta --> FormularzKierowcy : wybierz "Rejestracja jako Kierowca"
+FormularzKierowcy --> BrakKonta : przerwanie procesu
+FormularzKierowcy --> Niepowodzenie : brak akceptacji regulaminu
+
+FormularzKierowcy --> WalidacjaDanychKierowcy : zatwierdź formularz
+WalidacjaDanychKierowcy --> Niepowodzenie : błędne dane
+
+WalidacjaDanychKierowcy --> OczekujeNaAktywacjeKierowca : dane OK
+OczekujeNaAktywacjeKierowca --> Niepowodzenie : błąd systemu / link wygasł
+OczekujeNaAktywacjeKierowca --> OczekujeNaWeryfikacjeDokumentow : kliknięto link aktywacyjny
+
+OczekujeNaWeryfikacjeDokumentow --> KontoKierowcyAktywne : administrator zatwierdził
+
+KontoUżytkownikaAktywne --> [*]
+KontoKierowcyAktywne --> [*]
+Niepowodzenie --> [*]
+
+@enduml

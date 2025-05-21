@@ -1,0 +1,36 @@
+@startuml
+title Zapisywanie ulubionych tras i przystanków
+
+[*] --> Początek
+
+Początek --> ZapiszTrasę : po wyszukaniu trasy wybiera "Zapisz trasę"\n nadaje nazwę
+ZapiszTrasę --> Potwierdzenie : system zapisuje trasę\nwyświetla potwierdzenie
+
+Początek --> DodajPrzystanek : przy przystanku wybiera "Dodaj do ulubionych"
+DodajPrzystanek --> PotwierdzeniePrzystanku : system zapisuje przystanek\nwyświetla potwierdzenie
+
+Potwierdzenie --> PrzeglądUlubionych : użytkownik wybiera "Ulubione"
+PotwierdzeniePrzystanku --> PrzeglądUlubionych
+PrzeglądUlubionych --> WyświetlLista : system wyświetla listę
+WyświetlLista --> [*]
+
+' Scenariusze alternatywne
+WyświetlLista --> EdytujNazwę : edycja nazwy zapisanego elementu
+EdytujNazwę --> WyświetlLista
+
+WyświetlLista --> UsuńElement : usuwanie elementu z listy
+UsuńElement --> WyświetlLista
+
+PrzeglądUlubionych --> SugestiaZapisu : system sugeruje zapis często wyszukiwanych tras
+SugestiaZapisu --> ZapiszTrasę : użytkownik akceptuje sugestię
+
+' Sytuacje wyjątkowe
+ZapiszTrasę --> BłądZapisu : błąd techniczny przy zapisie
+DodajPrzystanek --> BłądZapisu
+
+ZapiszTrasę --> ElementIstnieje : próba zapisania już istniejącego
+DodajPrzystanek --> ElementIstnieje
+
+BłądZapisu --> [*]
+ElementIstnieje --> [*]
+@enduml

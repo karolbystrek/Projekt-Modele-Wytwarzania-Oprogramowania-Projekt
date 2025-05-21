@@ -1,0 +1,39 @@
+@startuml
+title Zarządzanie metodami płatności
+
+[*] --> ListaMetod : przejdź do "Metody płatności"
+
+' Dodawanie nowej metody
+ListaMetod --> FormularzNowejMetody : wybierz "Dodaj nową metodę"
+FormularzNowejMetody --> WeryfikacjaDanychMetody : wprowadź dane karty
+WeryfikacjaDanychMetody --> Niepowodzenie : wprowadź poprawne dane
+WeryfikacjaDanychMetody --> WeryfikacjaZewnetrzna : rozpoczęcie weryfikacji
+
+WeryfikacjaZewnetrzna --> Niepowodzenie : błąd komunikacji / autoryzacji
+WeryfikacjaZewnetrzna --> MetodaDodana : OK
+
+' Ustawianie domyślnej
+ListaMetod --> UstawDomyslna : wybierz metodę i "Ustaw jako domyślną"
+UstawDomyslna --> PotwierdzenieZmiany : potwierdzenie
+
+' Usuwanie metody
+ListaMetod --> UsuwanieMetody : wybierz metodę i "Usuń"
+UsuwanieMetody --> Ostrzezenie : sprawdzenie, czy to jedyna metoda
+Ostrzezenie --> [*] : rezygnacja
+Ostrzezenie --> PotwierdzenieUsuniecia : brak rezygnacji
+UsuwanieMetody --> PotwierdzenieUsuniecia : potwierdź usunięcie
+PotwierdzenieUsuniecia --> [*] : potwierdź usunięcie
+
+
+' Dodawanie innej metody (np. PayPal)
+ListaMetod --> DodajPayPal : wybierz "Dodaj PayPal"
+DodajPayPal --> PrzekierowanieZewnetrzne : przekierowanie do PayPal
+PrzekierowanieZewnetrzne --> MetodaDodana : zakończ autoryzację
+PrzekierowanieZewnetrzne --> Niepowodzenie : anuluj / odmówiono
+
+Niepowodzenie --> [*]
+MetodaDodana --> [*]
+PotwierdzenieZmiany --> [*]
+
+
+@enduml

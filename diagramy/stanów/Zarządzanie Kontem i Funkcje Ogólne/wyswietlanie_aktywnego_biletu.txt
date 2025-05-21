@@ -1,0 +1,29 @@
+@startuml
+title Wyświetlanie aktywnego biletu do kontroli
+
+[*] --> OpcjaBiletu : wybierz "Pokaż aktywny bilet"
+OpcjaBiletu --> WyszukiwanieBiletu : system identyfikuje aktywny bilet
+
+WyszukiwanieBiletu --> BrakBiletu : brak aktywnego biletu
+BrakBiletu --> [*]
+
+WyszukiwanieBiletu --> WyswietlenieBiletu : wybierz "Wyświetl bilet"
+WyswietlenieBiletu --> [*] : pokaż ekran kontrolerowi
+
+WyswietlenieBiletu --> BladWyswietlania : problem z wyświetleniem / QR
+BladWyswietlania --> [*]
+
+WyswietlenieBiletu --> OstrzezenieBateria : niska bateria
+OstrzezenieBateria --> [*]
+
+WyswietlenieBiletu --> BiletNiewazny : bilet wygasł / nieważny
+BiletNiewazny --> [*]
+
+OpcjaBiletu --> WyswietlOffline : brak internetu – pokaż pobrany bilet
+WyswietlOffline --> [*]
+
+WyszukiwanieBiletu --> WieleBiletow : więcej niż 1 aktywny bilet
+WieleBiletow --> WyswietlenieBiletu : wybierz bilet i "Wyświetl bilet"
+
+
+@enduml

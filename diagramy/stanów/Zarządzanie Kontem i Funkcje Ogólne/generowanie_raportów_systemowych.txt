@@ -1,0 +1,27 @@
+@startuml
+title Generowanie raportów systemowych
+
+[*] --> PanelRaportow : wybierz "Generowanie raportów"
+PanelRaportow --> KonfiguracjaRaportu : wybierz typ, ustaw kryteria
+KonfiguracjaRaportu --> GenerowanieRaportu : kliknij "Generuj raport"
+GenerowanieRaportu --> RaportGotowy : raport wygenerowany
+RaportGotowy --> UdostepnienieRaportu : wyświetl lub pobierz (PDF, CSV)
+UdostepnienieRaportu --> [*]
+
+PanelRaportow --> RaportyCykliczne : ustaw cykliczne generowanie
+RaportyCykliczne --> [*]
+
+KonfiguracjaRaportu --> ZapisSzablonu : zapisz szablon raportu
+ZapisSzablonu --> [*]
+
+GenerowanieRaportu --> BrakDanych : brak danych dla kryteriów
+BrakDanych --> [*]
+
+GenerowanieRaportu --> BladGenerowania : błąd podczas generowania
+BladGenerowania --> [*]
+
+GenerowanieRaportu --> DlugieOczekiwanie : duży raport – powiadomienie o postępie
+DlugieOczekiwanie --> RaportGotowy
+
+
+@enduml

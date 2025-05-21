@@ -1,0 +1,26 @@
+@startuml
+title Monitorowanie stanu systemu i logów
+
+[*] --> PanelMonitorowania : wybierz "Monitorowanie / Logi"
+PanelMonitorowania --> WidokDashboard : wyświetl dashboard / logi
+WidokDashboard --> AnalizaDanych : użyj filtrów, wyszukuj dane
+AnalizaDanych --> Diagnoza : zidentyfikuj problemy lub potwierdź poprawne działanie
+
+PanelMonitorowania --> KonfiguracjaAlertów : ustaw alerty systemowe
+KonfiguracjaAlertów --> [*]
+
+WidokDashboard --> EksportDanych : wybierz "Eksportuj dane"
+EksportDanych --> [*]
+
+PanelMonitorowania --> BrakDostępu : brak dostępu do narzędzi
+BrakDostępu --> [*]
+
+WidokDashboard --> PrzeciazenieSystemu : opóźnienia / niepełne dane
+PrzeciazenieSystemu --> [*]
+
+WidokDashboard --> OgraniczonyDostep : brak uprawnień do logów
+OgraniczonyDostep --> [*]
+
+Diagnoza --> [*]
+
+@enduml

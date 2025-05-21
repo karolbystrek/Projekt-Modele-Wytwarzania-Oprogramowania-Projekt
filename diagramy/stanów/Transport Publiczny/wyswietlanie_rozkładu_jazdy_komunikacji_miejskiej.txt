@@ -1,0 +1,27 @@
+@startuml
+title Wyświetlanie rozkładu jazdy komunikacji miejskiej
+
+[*] --> RozkladyJazdy : wybierz opcję "Rozkłady jazdy"
+RozkladyJazdy --> LiniaLubPrzystanek : wybierz linię lub przystanek
+LiniaLubPrzystanek --> PobranieRozkladu : pobierz rozkład jazdy (godziny, kierunki, dni tygodnia)
+PobranieRozkladu --> WyswietlenieRozkladu : wyświetl rozkład
+WyswietlenieRozkladu --> [*]
+
+LiniaLubPrzystanek --> WybranyDzien : wybierz konkretny dzień (roboczy, sobota, święto)
+WybranyDzien --> PobranieRozkladu
+
+WyswietlenieRozkladu --> WyswietlenieTraseNaMapie : wyświetl trasę linii na mapie z przystankami
+WyswietlenieTraseNaMapie --> WyswietlenieRozkladu
+
+WyswietlenieRozkladu --> WyswietlenieRozkladu : informacje o opóźnieniach w czasie rzeczywistym
+
+PobranieRozkladu --> BrakDanych : brak danych dla linii/przystanku, komunikat "Brak danych"
+BrakDanych --> [*]
+
+PobranieRozkladu --> BladSystemu : błąd komunikacji z systemem przewoźnika, wyniki niepełne
+BladSystemu --> [*]
+
+PobranieRozkladu --> NieaktualnyRozklad : nieaktualny rozkład, ostrzeżenie o braku danych live
+NieaktualnyRozklad --> WyswietlenieRozkladu
+
+@enduml

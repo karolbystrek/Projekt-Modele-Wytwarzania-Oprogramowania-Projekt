@@ -1,0 +1,17 @@
+@startuml
+title Przeglądanie historii kursów
+
+[*] --> ListaKursow : przejdź do "Historia kursów"
+
+ListaKursow --> KomunikatBrakKursow : brak zrealizowanych kursów
+ListaKursow --> BłądSystemowy : błąd ładowania danych
+ListaKursow --> ListaKursow : użyj filtrów / sortowania
+ListaKursow --> PodsumowanieZarobkow : wybierz okres i zobacz podsumowanie
+ListaKursow --> SzczegolyKursu : wybierz kurs z listy
+
+SzczegolyKursu --> [*]
+PodsumowanieZarobkow --> [*]
+KomunikatBrakKursow --> [*]
+BłądSystemowy --> [*]
+
+@enduml

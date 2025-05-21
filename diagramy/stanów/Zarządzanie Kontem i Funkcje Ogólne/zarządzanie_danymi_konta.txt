@@ -1,0 +1,36 @@
+@startuml
+title Zarządzanie danymi konta
+
+[*] --> PanelKonta : przejście do zarządzania kontem
+PanelKonta --> EdycjaDanych : wybierz dane do edycji
+EdycjaDanych --> WalidacjaDanych : zatwierdzenie zmian
+EdycjaDanych --> AnulowanieEdycji : rezygnacja
+
+WalidacjaDanych --> SukcesZmian : zmiany zapisane
+WalidacjaDanych --> BladWalidacji : błąd walidacji
+
+BladWalidacji --> EdycjaDanych
+
+
+PanelKonta --> ZmianaHasla : wybierz "Zmień hasło"
+ZmianaHasla --> WalidacjaHasla : wprowadź nowe hasło
+WalidacjaHasla --> SukcesZmianyHasla : hasło zmienione
+WalidacjaHasla --> Niepowodzenie : niezgodność haseł
+
+PanelKonta --> EdycjaPojazdu :  wybierz "Edycja danych pojazdu" (tylko Kierowca)
+EdycjaPojazdu --> WalidacjaDanychPojazdu
+WalidacjaDanychPojazdu --> [*] : dane OK 
+WalidacjaDanychPojazdu --> Niepowodzenie : błędne dane
+
+AnulowanieEdycji --> [*]
+SukcesZmianyHasla --> [*]
+SukcesZmian --> [*]
+
+[*] --> PanelAdmina : przejście do zarządzania kontami
+PanelAdmina --> PanelKontaAdmin : wybież konto do edycji
+PanelKontaAdmin --> AkcjaAdministracyjna : wybież akcję (np. zmień status, zresetuj hasło)
+AkcjaAdministracyjna -->  ZapisAkcję : potwierdź akcję
+ZapisAkcję --> [*]
+
+
+@enduml

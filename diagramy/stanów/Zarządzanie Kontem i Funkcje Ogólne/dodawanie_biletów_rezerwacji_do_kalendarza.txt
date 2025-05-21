@@ -1,0 +1,29 @@
+@startuml
+title Dodawanie biletów/rezerwacji do kalendarza
+
+[*] --> DodajDoKalendarza : wybierz "Dodaj do kalendarza"
+DodajDoKalendarza --> PrzygotujDaneWydarzenia : przygotowanie tytułu, dat, lokalizacji, opisu
+PrzygotujDaneWydarzenia --> InicjujDodawanie : dodanie do kalendarza lub generowanie pliku .ics
+InicjujDodawanie --> Potwierdzenie : wydarzenie dodane / plik pobrany
+
+Potwierdzenie --> [*]
+
+DodajDoKalendarza --> Sugerowanie : system sugeruje dodanie po rezerwacji
+Sugerowanie --> [*]
+
+InicjujDodawanie --> KonfiguracjaPrzypomnien : użytkownik ustawia przypomnienie
+KonfiguracjaPrzypomnien --> [*]
+
+DodajDoKalendarza --> BrakKalendarza : brak aplikacji lub konta kalendarza
+BrakKalendarza --> [*]
+
+InicjujDodawanie --> BrakUprawnien : brak uprawnień aplikacji
+BrakUprawnien --> [*]
+
+InicjujDodawanie --> BladAPI : błąd API lub pliku .ics
+BladAPI --> [*]
+
+PrzygotujDaneWydarzenia --> DaneNiekompletne : niekompletne dane podróży
+DaneNiekompletne --> [*]
+
+@enduml
